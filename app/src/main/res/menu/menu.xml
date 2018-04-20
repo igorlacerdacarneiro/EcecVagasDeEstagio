@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_adm_vagas"
+        android:title="@string/adminVagas"
+        app:showAsAction="never" >
+    </item>
+
+    <item
+        android:id="@+id/action_adm_users"
+        android:title="@string/adminUser"
+        app:showAsAction="never" >
+    </item>
+
+    <item
+        android:id="@+id/action_perfil"
+        android:title="@string/perfil"
+        app:showAsAction="never" >
+    </item>
+
+    <item
+        android:id="@+id/action_sair"
+        android:title="@string/sair"
+        app:showAsAction="never" >
+    </item>
+
+</menu>

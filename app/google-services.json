@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "655248022019",
+    "firebase_url": "https://ececvagasdeestagio.firebaseio.com",
+    "project_id": "ececvagasdeestagio",
+    "storage_bucket": "ececvagasdeestagio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655248022019:android:ede0ecba58f106ad",
+        "android_client_info": {
+          "package_name": "com.example.igorl.ececvagasdeestagio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "655248022019-o7nkhuabl09gtqk6c7267ah49j3e1u22.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.igorl.ececvagasdeestagio",
+            "certificate_hash": "0b38a827d3fc46ec40893240cc888e465744c1ca"
+          }
+        },
+        {
+          "client_id": "655248022019-nu33g1djajjsvbheiddo5ppks66iqocf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS37ysS5Usi56r614_DU8lTtgdr4BwQJ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "655248022019-nu33g1djajjsvbheiddo5ppks66iqocf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

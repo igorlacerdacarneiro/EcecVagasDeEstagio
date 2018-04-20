@@ -1,0 +1,89 @@
+<resources>
+    <!-- Botões -->
+    <string name="entrar">ENTRAR</string>
+    <string name="solicitar">SOLICITAR</string>
+    <string name="salvar">SALVAR</string>
+    <string name="editar">EDITAR</string>
+    <string name="excluir">EXCLUIR</string>
+    <string name="perfil">Perfil</string>
+    <string name="sair">Sair</string>
+    <string name="enviar">ENVIAR</string>
+
+    <!-- Outros -->
+    <string name="cadastar">Cadastrar</string>
+    <string name="app">ECEC \n Estágios</string>
+    <string name="usuarios">Usuários</string>
+    <string name="admins">Administradores</string>
+    <string name="vagas">Vagas</string>
+    <string name="adminUser">Administração de Usuários</string>
+    <string name="adminVagas">Administração de Vagas</string>
+    <string name="app_name">Vagas de Estágio</string>
+    <string name="aluno">Aluno</string>
+    <string name="administrador">Administrador</string>
+    <string name="disponivel">Disponível</string>
+    <string name="encerrada">Encerrada</string>
+
+    <!-- Text View -->
+    <string name="empresa">Empresa:</string>
+    <string name="horario">Horário:</string>
+    <string name="nome">Nome:</string>
+    <string name="titulo">Título:</string>
+    <string name="local">Local:</string>
+    <string name="senha">Senha:</string>
+    <string name="confirmar_senha">Confirmar Senha:</string>
+    <string name="matricula">Matrícula: </string>
+    <string name="email">E-mail:</string>
+    <string name="cursos">Selecione um curso: </string>
+    <string name="status_vaga">Status Vaga: </string>
+    <string name="local_vaga">Local: </string>
+    <string name="dia">Dia: </string>
+    <string name="horario_inicio">Horário: </string>
+    <string name="atividades_vaga">Atividades da Vaga: </string>
+    <string name="requisitos_vaga">Requisitos da Vaga: </string>
+    <string name="numero_vaga">Número de Vaga(s): </string>
+    <string name="valor_bolsa_vaga">Valor da Bolsa: </string>
+    <string name="informacoes_vaga">Informações: </string>
+    <string name="imagem_vaga">Imagem de Divulgação: </string>
+    <string name="data_vaga">Data: </string>
+    <string name="status">Status: </string>
+    <string name="tipo_usuario">Tipo Usuário: </string>
+    <string name="selecione">SELECIONAR </string>
+    <string name="codigo">Código Vaga: </string>
+    <string name="esqueci_senha">Esqueci minha senha</string>
+
+    <!-- Titulo Telas -->
+    <string name="tela_cadastro">Cadastro</string>
+    <string name="tela_vagas">Vagas</string>
+    <string name="tela_admin_user">Administração de Usuários</string>
+    <string name="tela_admin_vagas">Administração de Vagas</string>
+    <string name="tela_usuario">Usuário</string>
+    <string name="tela_cadastro_vaga">Cadastro de Vaga</string>
+    <string name="recuperar_acesso">Recuperar Senha</string>
+
+    <!-- Arrays -->
+    <string-array name="titulo_tab">
+        <item>Disponíveis</item>
+        <item>Encerradas</item>
+    </string-array>
+    <string-array name="titulo_tab2">
+        <item>Alunos</item>
+        <item>Administradores</item>
+    </string-array>
+    <string-array name="spinner_cursos">
+        <item>Selecione um curso</item>
+        <item>Análise e Desenvolvimento de Sistemas</item>
+        <item>Ciência da Computação</item>
+        <item>Engenharia de Computação</item>
+        <item>Física</item>
+        <item>Matemática</item>
+        <item>Química</item>
+    </string-array>
+    <string-array name="spinner_dia">
+        <item>Selecione uma opção</item>
+        <item>Seg. à Sex.</item>
+        <item>Seg. à Sáb.</item>
+    </string-array>
+
+    <string name="settings_name">Settings</string>
+
+</resources>
