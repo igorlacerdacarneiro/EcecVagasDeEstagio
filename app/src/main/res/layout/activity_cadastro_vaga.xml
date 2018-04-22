@@ -253,11 +253,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/botaoSalvarVaga"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/salvar" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/botaoSalvarVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/salvar" />
+
+                <Button
+                    android:id="@+id/botaoEditarVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/editar" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

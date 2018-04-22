@@ -54,8 +54,8 @@ public class Perfil extends CommonActivity {
     private TextView confSenha;
     private Usuario usuario;
 
-    private FirebaseAuth autenticacao;
-    private DatabaseReference firebase;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +71,9 @@ public class Perfil extends CommonActivity {
 
         openProgressBar();
 
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        firebase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos").child(autenticacao.getCurrentUser().getUid());
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        firebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos").child(firebaseAuth.getCurrentUser().getUid());
+        firebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Usuario u = dataSnapshot.getValue(Usuario.class);
@@ -97,8 +97,8 @@ public class Perfil extends CommonActivity {
                     if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
                         openProgressBar();
                         initUser();
-                        usuario.updateDB();
-                        autenticacao.getCurrentUser().updatePassword(usuario.getSenha());
+                        usuario.updateUserFBDatabase();
+                        firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
                         salvarDadosUsuario();
                     }else {
                         Toast.makeText(Perfil.this, "Senhas não correspondem", Toast.LENGTH_LONG).show();
@@ -157,7 +157,7 @@ public class Perfil extends CommonActivity {
 
     protected void initUser(){
         usuario = new Usuario();
-        usuario.setId(autenticacao.getCurrentUser().getUid());
+        usuario.setId(firebaseAuth.getCurrentUser().getUid());
         usuario.setNome(editNome.getText().toString());
         usuario.setMatricula(editMatricula.getText().toString());
         usuario.setEmail(editEmail.getText().toString());

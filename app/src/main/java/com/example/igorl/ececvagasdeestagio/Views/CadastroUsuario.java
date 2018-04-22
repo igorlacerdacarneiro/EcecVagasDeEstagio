@@ -102,7 +102,7 @@ public class CadastroUsuario extends CommonActivity {
                     if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
                         openProgressBar();
                         initUser();
-                        usuario.updateDB();
+                        usuario.updateUserFBDatabase();
                         firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
                         salvarDadosUsuario();
                     }else {

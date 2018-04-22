@@ -112,7 +112,7 @@ public class Usuario {
         }
     }
 
-    public void salvarDB(DatabaseReference.CompletionListener... completionListener){
+    public void salvarUserFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
         if(getTipo() == 1){
             referenciaFirebase = referenciaFirebase.child("usuarios").child("alunos");
@@ -128,7 +128,7 @@ public class Usuario {
         }
     }
 
-    public void updateDB(){
+    public void updateUserFBDatabase(){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
 
         if(getTipo() == 1){

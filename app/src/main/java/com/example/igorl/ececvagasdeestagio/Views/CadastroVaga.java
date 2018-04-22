@@ -57,7 +57,7 @@ import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class CadastroVaga extends CommonActivity {
+public class CadastroVaga extends CommonActivity implements DatabaseReference.CompletionListener {
 
     private TextView codigo;
     private Spinner curso;
@@ -78,14 +78,11 @@ public class CadastroVaga extends CommonActivity {
     private ImageView imagem;
     private TextView data;
     private Button salvar;
-
+    private Button editar;
     private TextView selecionarFoto;
-
     private TextView horario1;
     private TextView horario2;
-
     private Vaga vaga;
-
     private DatabaseReference firebaseReference;
     private StorageReference storageReference;
 
@@ -110,6 +107,14 @@ public class CadastroVaga extends CommonActivity {
 
         initViews();
 
+        /* SETAR O SPINNER DE CURSOS */
+        ArrayAdapter adapterCursos = ArrayAdapter.createFromResource(this, R.array.spinner_cursos, android.R.layout.simple_spinner_dropdown_item);
+        curso.setAdapter(adapterCursos);
+
+        /* SETAR O SPINNER DE DIA */
+        ArrayAdapter adapterDia = ArrayAdapter.createFromResource(this, R.array.spinner_dia, android.R.layout.simple_spinner_dropdown_item);
+        dia.setAdapter(adapterDia);
+
         Bundle b = getIntent().getExtras();
         if(b != null) {
 
@@ -126,74 +131,39 @@ public class CadastroVaga extends CommonActivity {
             numero.setText(vaga.getNumero());
             valor.setText(vaga.getBolsa());
             informacoes.setText(vaga.getInformacoes());
+            data.setText(vaga.getData());
+            setSelectValueSpinner(curso, vaga.getCurso());
+
+            String[] aux = vaga.getHorario().split(" ");
+            String juntarStringDia = aux[0]+" "+aux[1]+" "+aux[2];
+            setSelectValueSpinner(dia, juntarStringDia);
+            horarioInicio.setText(aux[4]);
+            horarioFim.setText(aux[6]);
+
+            disableButton(salvar);
+            horario1.setVisibility(View.INVISIBLE);
+            horario2.setVisibility(View.INVISIBLE);
+            vagaDisponivel.setClickable(false);
+            vagaEncerrada.setClickable(false);
+            disableEditText(empresa);
+            disableEditText(local);
+            disableEditText(titulo);
+            disableEditText(atividades);
+            disableEditText(requisitos);
+            disableEditText(numero);
+            disableEditText(valor);
+            disableEditText(informacoes);
+            curso.setEnabled(false);
+            dia.setEnabled(false);
+            selecionarFoto.setVisibility(View.INVISIBLE);
 
         }else{
-            novaVaga();
+            /* SETAR O CODIGO DA VAGA AUTOMATICO */
+            Calendar cod = Calendar.getInstance();
+            codigo.setText(String.valueOf("v"+cod.get(Calendar.YEAR)+cod.get(Calendar.MONTH)+cod.get(Calendar.DAY_OF_MONTH)+cod.get(Calendar.HOUR_OF_DAY)+cod.get(Calendar.MINUTE)));
         }
-    }
 
-    protected void initViews(){
-        progressBar = (ProgressBar) findViewById(R.id.cadastro_vaga_progress);
-        codigo = (TextView) findViewById(R.id.textViewCodigoVaga);
-        curso = (Spinner) findViewById(R.id.spinnerVagaCurso) ;
-        vagaStatus = (RadioGroup) findViewById(R.id.radioStatusVaga);
-        vagaDisponivel = (RadioButton) findViewById(R.id.radioStatusVagaDisponivel);
-        vagaEncerrada = (RadioButton) findViewById(R.id.radioStatusVagaEncerrada);
-        empresa = (EditText) findViewById(R.id.editVagaEmpresa);
-        local = (EditText) findViewById(R.id.editVagaLocal);
-        titulo = (EditText) findViewById(R.id.editVagaTitulo);
-        dia = (Spinner) findViewById(R.id.spinnerVagaDia);
-        horario1 = (TextView) findViewById(R.id.textViewVagaHorario1);
-        horario2 = (TextView) findViewById(R.id.textViewVagaHorario2);
-        horarioInicio = (TextView) findViewById(R.id.textViewVagaHorarioInicio);
-        horarioFim = (TextView) findViewById(R.id.textViewVagaHorarioFim);
-        atividades = (EditText) findViewById(R.id.editVagaAtividades);
-        requisitos = (EditText) findViewById(R.id.editVagaRequisitos);
-        numero = (EditText) findViewById(R.id.editVagaNumero);
-        valor = (EditText) findViewById(R.id.editVagaValor);
-        informacoes = (EditText) findViewById(R.id.editVagaInformacoes);
-        selecionarFoto = (TextView) findViewById(R.id.textViewSelecionarFoto);
-        imagem = (ImageView) findViewById(R.id.imagemDivulgacaoVaga);
-        data = (TextView) findViewById(R.id.textViewDataVaga);
-        salvar = (Button) findViewById(R.id.botaoSalvarVaga);
-    }
-
-    protected void initUser(){
-        vaga = new Vaga();
-        vaga.setCodigo(codigo.getText().toString());
-        vaga.setCurso(curso.getSelectedItem().toString());
-        if(vagaDisponivel.isChecked()){
-            vaga.setStatus(1);
-        }else{
-            vaga.setStatus(2);
-        }
-        vaga.setEmpresa(empresa.getText().toString());
-        vaga.setLocal(local.getText().toString());
-        vaga.setTitulo(titulo.getText().toString());
-        vaga.setHorario(dia.getSelectedItem().toString()+" de "+horarioInicio.getText().toString()+" às "+horarioFim.getText().toString());
-        vaga.setAtividades(atividades.getText().toString());
-        vaga.setRequisitos(requisitos.getText().toString());
-        vaga.setNumero(numero.getText().toString());
-        vaga.setBolsa(valor.getText().toString());
-        vaga.setInformacoes(informacoes.getText().toString());
-        vaga.setData(data.getText().toString());
-    }
-
-    private void novaVaga(){
-
-        /* SETAR O CODIGO DA VAGA AUTOMATICO */
-        Calendar cod = Calendar.getInstance();
-        codigo.setText(String.valueOf("v"+cod.get(Calendar.YEAR)+cod.get(Calendar.MONTH)+cod.get(Calendar.DAY_OF_MONTH)+cod.get(Calendar.HOUR_OF_DAY)+cod.get(Calendar.MINUTE)));
-
-        /* SETAR O SPINNER DE CURSOS */
-        ArrayAdapter adapterCursos = ArrayAdapter.createFromResource(this, R.array.spinner_cursos, android.R.layout.simple_spinner_dropdown_item);
-        curso.setAdapter(adapterCursos);
-
-        /* SETAR O SPINNER DE DIA */
-        ArrayAdapter adapterDia = ArrayAdapter.createFromResource(this, R.array.spinner_dia, android.R.layout.simple_spinner_dropdown_item);
-        dia.setAdapter(adapterDia);
-
-        /* AÇÃO DO BOTÃO SALVAR */
+         /* AÇÃO DO BOTÃO SALVAR */
         salvar.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -211,12 +181,34 @@ public class CadastroVaga extends CommonActivity {
                     data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH)+"/"+cod.get(Calendar.MONTH)+"/"+cod.get(Calendar.YEAR)+" às "+ cod.get(Calendar.HOUR_OF_DAY)+":"+cod.get(Calendar.MINUTE)));
 
                     initUser();
-                    salvarImagemFBStorage();
-                    vaga.salvar();
-                    voltarAposSalvarVaga();
+                    salvarImagemFBStorage(CadastroVaga.this);
+                    vaga.salvarVagaFBDatabase();
                 }else{
                     Toast.makeText(CadastroVaga.this, "Todos os campos são obrigatórios", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        editar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                disableButton(editar);
+                enableButton(salvar);
+                horario1.setVisibility(View.VISIBLE);
+                horario2.setVisibility(View.VISIBLE);
+                vagaDisponivel.setClickable(true);
+                vagaEncerrada.setClickable(true);
+                enableEditText(empresa);
+                enableEditText(local);
+                enableEditText(titulo);
+                enableEditText(atividades);
+                enableEditText(requisitos);
+                enableEditText(numero);
+                enableEditText(valor);
+                enableEditText(informacoes);
+                curso.setEnabled(true);
+                dia.setEnabled(true);
+                selecionarFoto.setVisibility(View.VISIBLE);
             }
         });
 
@@ -266,19 +258,61 @@ public class CadastroVaga extends CommonActivity {
 
     }
 
-    private void salvarImagemFBStorage(){
+    protected void initViews(){
+        progressBar = (ProgressBar) findViewById(R.id.cadastro_vaga_progress);
+        codigo = (TextView) findViewById(R.id.textViewCodigoVaga);
+        curso = (Spinner) findViewById(R.id.spinnerVagaCurso) ;
+        vagaStatus = (RadioGroup) findViewById(R.id.radioStatusVaga);
+        vagaDisponivel = (RadioButton) findViewById(R.id.radioStatusVagaDisponivel);
+        vagaEncerrada = (RadioButton) findViewById(R.id.radioStatusVagaEncerrada);
+        empresa = (EditText) findViewById(R.id.editVagaEmpresa);
+        local = (EditText) findViewById(R.id.editVagaLocal);
+        titulo = (EditText) findViewById(R.id.editVagaTitulo);
+        dia = (Spinner) findViewById(R.id.spinnerVagaDia);
+        horario1 = (TextView) findViewById(R.id.textViewVagaHorario1);
+        horario2 = (TextView) findViewById(R.id.textViewVagaHorario2);
+        horarioInicio = (TextView) findViewById(R.id.textViewVagaHorarioInicio);
+        horarioFim = (TextView) findViewById(R.id.textViewVagaHorarioFim);
+        atividades = (EditText) findViewById(R.id.editVagaAtividades);
+        requisitos = (EditText) findViewById(R.id.editVagaRequisitos);
+        numero = (EditText) findViewById(R.id.editVagaNumero);
+        valor = (EditText) findViewById(R.id.editVagaValor);
+        informacoes = (EditText) findViewById(R.id.editVagaInformacoes);
+        selecionarFoto = (TextView) findViewById(R.id.textViewSelecionarFoto);
+        imagem = (ImageView) findViewById(R.id.imagemDivulgacaoVaga);
+        data = (TextView) findViewById(R.id.textViewDataVaga);
+        salvar = (Button) findViewById(R.id.botaoSalvarVaga);
+        editar = (Button) findViewById(R.id.botaoEditarVaga);
+    }
+
+    protected void initUser(){
+        vaga = new Vaga();
+        vaga.setCodigo(codigo.getText().toString());
+        vaga.setCurso(curso.getSelectedItem().toString());
+        if(vagaDisponivel.isChecked()){
+            vaga.setStatus(1);
+        }else{
+            vaga.setStatus(2);
+        }
+        vaga.setEmpresa(empresa.getText().toString());
+        vaga.setLocal(local.getText().toString());
+        vaga.setTitulo(titulo.getText().toString());
+        vaga.setHorario(dia.getSelectedItem().toString()+" de "+horarioInicio.getText().toString()+" às "+horarioFim.getText().toString());
+        vaga.setAtividades(atividades.getText().toString());
+        vaga.setRequisitos(requisitos.getText().toString());
+        vaga.setNumero(numero.getText().toString());
+        vaga.setBolsa(valor.getText().toString());
+        vaga.setInformacoes(informacoes.getText().toString());
+        vaga.setData(data.getText().toString());
+    }
+
+    private void salvarImagemFBStorage(DatabaseReference.CompletionListener... completionListener){
         if(mImageUri != null){
             StorageReference fileReference = storageReference.child("uploads/"+System.currentTimeMillis() + "."+getFileExtension(mImageUri));
             fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                }
-                            }, 5000);
                             vaga.setImagem(taskSnapshot.getDownloadUrl().toString());
                             Log.i("log", "lasoaosska "+vaga.getImagem());
                         }
@@ -310,20 +344,25 @@ public class CadastroVaga extends CommonActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == android.R.id.home){
-            AlertDialog.Builder builder;
-            builder = new AlertDialog.Builder(CadastroVaga.this);
-            builder.setTitle("Sair")
-                    .setMessage("Vai deseja sair sem salvar?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {}
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            if(salvar.isEnabled()) {
+                AlertDialog.Builder builder;
+                builder = new AlertDialog.Builder(CadastroVaga.this);
+                builder.setTitle("Sair")
+                        .setMessage("Vai deseja sair?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }else{
+                finish();
+            }
         }
         return  super.onOptionsItemSelected(item);
     }
@@ -334,7 +373,43 @@ public class CadastroVaga extends CommonActivity {
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null){
             mImageUri = data.getData();
+
             imagem.setImageURI(mImageUri);
+        }
+    }
+
+    @Override
+    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+        Intent intent = new Intent(CadastroVaga.this, AdministracaoVagas.class);
+        startActivity(intent);
+        closeProgressBar();
+        finish();
+    }
+
+    private void disableEditText(EditText editText) {
+        editText.setEnabled(false);
+    }
+
+    private void enableEditText(EditText editText) {
+        editText.setEnabled(true);
+    }
+
+    private void disableButton(Button button) {
+        button.setVisibility(View.INVISIBLE);
+        button.setEnabled(false);
+    }
+
+    private void enableButton(Button button) {
+        button.setVisibility(View.VISIBLE);
+        button.setEnabled(true);
+    }
+
+    private void setSelectValueSpinner(Spinner spinner, String value) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).equals(value)) {
+                spinner.setSelection(i);
+                break;
+            }
         }
     }
 

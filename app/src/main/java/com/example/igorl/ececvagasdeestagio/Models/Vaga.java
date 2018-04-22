@@ -1,9 +1,18 @@
 package com.example.igorl.ececvagasdeestagio.Models;
 
 import android.content.Context;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
+import com.example.igorl.ececvagasdeestagio.Views.CadastroVaga;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 /**
  * Created by igorl on 19/03/2018.
@@ -27,15 +36,6 @@ public class Vaga {
     private String data;
 
     public Vaga() {
-    }
-
-    public void salvar(){
-        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
-        if(getStatus() == 1){
-            referenciaFirebase.child("vagas").child("disponiveis").child(String.valueOf(getCodigo())).setValue(this);
-        }else{
-            referenciaFirebase.child("vagas").child("encerradas").child(String.valueOf(getCodigo())).setValue(this);
-        }
     }
 
     public Vaga(String id, String codigo, int status, String curso, String empresa, String local, String titulo, String horario, String atividades, String requisitos, String numero, String bolsa, String informacoes, String imagem, String data) {
@@ -174,6 +174,15 @@ public class Vaga {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public void salvarVagaFBDatabase(){
+        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+        if(getStatus() == 1){
+            referenciaFirebase.child("vagas").child("disponiveis").child(String.valueOf(getCodigo())).setValue(this);
+        }else{
+            referenciaFirebase.child("vagas").child("encerradas").child(String.valueOf(getCodigo())).setValue(this);
+        }
     }
 
 }

@@ -117,7 +117,7 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
                 if(task.isSuccessful()){
 
                     usuario.setId(task.getResult().getUser().getUid());
-                    usuario.salvarDB(SolicitarCadastro.this);
+                    usuario.salvarUserFBDatabase(SolicitarCadastro.this);
 
                 }else {
                     String erroExcessao = "";
