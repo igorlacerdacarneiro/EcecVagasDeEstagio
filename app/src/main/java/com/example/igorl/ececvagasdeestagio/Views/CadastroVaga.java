@@ -54,10 +54,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
-public class CadastroVaga extends CommonActivity implements DatabaseReference.CompletionListener {
+public class CadastroVaga extends CommonActivity{
 
     private TextView codigo;
     private Spinner curso;
@@ -161,6 +163,7 @@ public class CadastroVaga extends CommonActivity implements DatabaseReference.Co
             /* SETAR O CODIGO DA VAGA AUTOMATICO */
             Calendar cod = Calendar.getInstance();
             codigo.setText(String.valueOf("v"+cod.get(Calendar.YEAR)+cod.get(Calendar.MONTH)+cod.get(Calendar.DAY_OF_MONTH)+cod.get(Calendar.HOUR_OF_DAY)+cod.get(Calendar.MINUTE)));
+            disableButton(editar);
         }
 
          /* AÇÃO DO BOTÃO SALVAR */
@@ -175,16 +178,44 @@ public class CadastroVaga extends CommonActivity implements DatabaseReference.Co
                         !requisitos.getText().toString().trim().equals("") && !numero.getText().toString().trim().equals("") &&
                         !valor.getText().toString().trim().equals("") && !informacoes.getText().toString().trim().equals(""))
                 {
-                    openProgressBar();
+                    try {
+                        if(validaValorHoariosVaga(horarioInicio.getText().toString(), horarioFim.getText().toString())) {
 
-                    Calendar cod = Calendar.getInstance();
-                    data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH)+"/"+cod.get(Calendar.MONTH)+"/"+cod.get(Calendar.YEAR)+" às "+ cod.get(Calendar.HOUR_OF_DAY)+":"+cod.get(Calendar.MINUTE)));
+                            if (validaValorNumeroVaga(numero.getText().toString())) {
 
-                    initUser();
-                    salvarImagemFBStorage(CadastroVaga.this);
-                    vaga.salvarVagaFBDatabase();
+                                if (validaValorBolsaVaga(valor.getText().toString())) {
+
+                                    openProgressBar();
+
+                                    Calendar cod = Calendar.getInstance();
+                                    data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH) + "/" + cod.get(Calendar.MONTH) + "/" + cod.get(Calendar.YEAR) + " às " + cod.get(Calendar.HOUR_OF_DAY) + ":" + cod.get(Calendar.MINUTE)));
+
+                                    initUser();
+                                    salvarImagemFBStorage();
+
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            vaga.salvarVagaFBDatabase();
+                                            voltarAposSalvarVaga();
+                                        }
+                                    }, 5000);
+
+                                } else {
+                                    showDialogMessage("Valor da bolsa não pode ser zero.");
+                                }
+                            } else {
+                                showDialogMessage("Número de vaga não pode ser zero.");
+                            }
+                        }else{
+                            showDialogMessage("Horário de início e fim inválido.");
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }else{
-                    Toast.makeText(CadastroVaga.this, "Todos os campos são obrigatórios", Toast.LENGTH_LONG).show();
+                    showDialogMessage("Todos os campos são obrigatórios.");
                 }
             }
         });
@@ -255,7 +286,6 @@ public class CadastroVaga extends CommonActivity implements DatabaseReference.Co
                 timePickerDialog.show();
             }
         });
-
     }
 
     protected void initViews(){
@@ -306,23 +336,22 @@ public class CadastroVaga extends CommonActivity implements DatabaseReference.Co
         vaga.setData(data.getText().toString());
     }
 
-    private void salvarImagemFBStorage(DatabaseReference.CompletionListener... completionListener){
+    private void salvarImagemFBStorage(){
         if(mImageUri != null){
             StorageReference fileReference = storageReference.child("uploads/"+System.currentTimeMillis() + "."+getFileExtension(mImageUri));
             fileReference.putFile(mImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            vaga.setImagem(taskSnapshot.getDownloadUrl().toString());
-                            Log.i("log", "lasoaosska "+vaga.getImagem());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(CadastroVaga.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        vaga.setImagem(taskSnapshot.getDownloadUrl().toString());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CadastroVaga.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
         }else{
             Toast.makeText(CadastroVaga.this, "Não tem foto selecionada", Toast.LENGTH_SHORT).show();
         }
@@ -373,35 +402,8 @@ public class CadastroVaga extends CommonActivity implements DatabaseReference.Co
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null){
             mImageUri = data.getData();
-
             imagem.setImageURI(mImageUri);
         }
-    }
-
-    @Override
-    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-        Intent intent = new Intent(CadastroVaga.this, AdministracaoVagas.class);
-        startActivity(intent);
-        closeProgressBar();
-        finish();
-    }
-
-    private void disableEditText(EditText editText) {
-        editText.setEnabled(false);
-    }
-
-    private void enableEditText(EditText editText) {
-        editText.setEnabled(true);
-    }
-
-    private void disableButton(Button button) {
-        button.setVisibility(View.INVISIBLE);
-        button.setEnabled(false);
-    }
-
-    private void enableButton(Button button) {
-        button.setVisibility(View.VISIBLE);
-        button.setEnabled(true);
     }
 
     private void setSelectValueSpinner(Spinner spinner, String value) {
@@ -413,4 +415,33 @@ public class CadastroVaga extends CommonActivity implements DatabaseReference.Co
         }
     }
 
+    private boolean validaValorNumeroVaga(String numero) {
+        int num = Integer.valueOf(numero);
+        if(num <= 0){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validaValorBolsaVaga (String valor) {
+        int val = Integer.valueOf(valor);
+        if(val <= 0){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validaValorHoariosVaga(String hora1, String hora2) throws ParseException {
+        SimpleDateFormat sdfConvert = new SimpleDateFormat("HH:mm");
+        Date um = null;
+        Date dois = null;
+
+        um = sdfConvert.parse(hora1);
+        dois = sdfConvert.parse(hora2);
+
+        if(dois.getTime() <= um.getTime()){
+            return false;
+        }
+        return true;
+    }
 }

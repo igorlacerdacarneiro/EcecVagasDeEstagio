@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:layout_margin="20px"
+    android:layout_margin="20dp"
     tools:context="com.example.igorl.ececvagasdeestagio.Views.CadastroVaga">
 
     <ProgressBar
@@ -268,7 +268,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/editar" />
-
             </RelativeLayout>
 
         </LinearLayout>

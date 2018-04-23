@@ -15,16 +15,24 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
+import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 public class Principal extends AppCompatActivity {
     private TextView nome;
     private TextView email;
+    private Usuario mUsers;
 
-    private FirebaseAuth usuarioFirebase;
-    private DatabaseReference firebase;
+    Gson gson = new Gson();
+
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +47,28 @@ public class Principal extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        usuarioFirebase = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        nome.setText("id: "+ usuarioFirebase.getCurrentUser().getUid());
-        email.setText("Email: "+ usuarioFirebase.getCurrentUser().getEmail());
+
+        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
+
+        nome.setText("id: "+ firebaseAuth.getCurrentUser().getUid());
+        email.setText("Email: "+ firebaseAuth.getCurrentUser().getEmail());
+
+        firebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos").child(firebaseAuth.getCurrentUser().getUid());
+        firebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mUsers = dataSnapshot.getValue(Usuario.class);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(Principal.this, "Erro ao Recuperar dados de usuário", Toast.LENGTH_LONG).show();
+                firebaseAuth.signOut();
+                Intent intent_sair = new Intent(Principal.this, Login.class);
+                startActivity(intent_sair);
+                finish();
+
+            }
+        });
     }
 
     @Override
@@ -70,7 +97,8 @@ public class Principal extends AppCompatActivity {
             case R.id.action_perfil:
 
                 Intent intent_perfil = new Intent(Principal.this, Perfil.class);
-                startActivity(intent_perfil);
+                intent_perfil.putExtra("usuario",gson.toJson(mUsers));
+                startActivityForResult(intent_perfil, 2);
 
                 break;
             case R.id.action_sair:
@@ -82,7 +110,7 @@ public class Principal extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                usuarioFirebase.signOut();
+                                firebaseAuth.signOut();
                                 Intent intent_sair = new Intent(Principal.this, Login.class);
                                 startActivity(intent_sair);
                                 finish();

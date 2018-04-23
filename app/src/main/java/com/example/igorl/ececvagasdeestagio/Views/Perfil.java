@@ -37,6 +37,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 public class Perfil extends CommonActivity {
 
@@ -53,6 +54,8 @@ public class Perfil extends CommonActivity {
     private TextView tipo;
     private TextView confSenha;
     private Usuario usuario;
+
+    Gson gson = new Gson();
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference firebaseDatabase;
@@ -71,24 +74,24 @@ public class Perfil extends CommonActivity {
 
         openProgressBar();
 
-        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        firebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos").child(firebaseAuth.getCurrentUser().getUid());
-        firebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Usuario u = dataSnapshot.getValue(Usuario.class);
-                editNome.setText(u.getNome());
-                editMatricula.setText(u.getMatricula());
-                editEmail.setText(u.getEmail());
-                editSenha.setText(u.getSenha());
-                editConfirmaSenha.setText(u.getSenha());
-                closeProgressBar();
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+            String result = b.getString("usuario");
+            Usuario usuario = gson.fromJson(result, Usuario.class);
+
+            if(usuario.getTipo() == 1){
+                aluno.setChecked(true);
+            }else{
+                admin.setChecked(true);
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(Perfil.this, "ERRO AO RECUPERAR DADOS", Toast.LENGTH_LONG).show();
-            }
-        });
+            editNome.setText(usuario.getNome());
+            editMatricula.setText(usuario.getMatricula());
+            editEmail.setText(usuario.getEmail());
+            editSenha.setText(usuario.getSenha());
+            editConfirmaSenha.setText(usuario.getSenha());
+        }
+
+        closeProgressBar();
 
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,10 +104,10 @@ public class Perfil extends CommonActivity {
                         firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
                         salvarDadosUsuario();
                     }else {
-                        Toast.makeText(Perfil.this, "Senhas não correspondem", Toast.LENGTH_LONG).show();
+                        showDialogMessage("Senhas não correspondem.");
                     }
                 }else{
-                    Toast.makeText(Perfil.this, "Todos os campos são obrigatórios", Toast.LENGTH_LONG).show();
+                    showDialogMessage("Todos os campos são obrigatórios");
                 }
             }
         });
@@ -201,23 +204,4 @@ public class Perfil extends CommonActivity {
         }
         return  super.onOptionsItemSelected(item);
     }
-
-    private void disableEditText(EditText editText) {
-        editText.setEnabled(false);
-    }
-
-    private void enableEditText(EditText editText) {
-        editText.setEnabled(true);
-    }
-
-    private void disableButton(Button button) {
-        button.setVisibility(View.INVISIBLE);
-        button.setEnabled(false);
-    }
-
-    private void enableButton(Button button) {
-        button.setVisibility(View.VISIBLE);
-        button.setEnabled(true);
-    }
-
 }

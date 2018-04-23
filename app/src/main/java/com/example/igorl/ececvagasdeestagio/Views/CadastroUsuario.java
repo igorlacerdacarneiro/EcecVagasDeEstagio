@@ -65,7 +65,6 @@ public class CadastroUsuario extends CommonActivity {
             String result = b.getString("usuario");
 
             Usuario usuario = gson.fromJson(result, Usuario.class);
-            Log.i("log", "sauhsa "+usuario);
 
             if(usuario.getTipo() == 1){
                 aluno.setChecked(true);
@@ -106,10 +105,10 @@ public class CadastroUsuario extends CommonActivity {
                         firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
                         salvarDadosUsuario();
                     }else {
-                        Toast.makeText(CadastroUsuario.this, "Senhas não correspondem", Toast.LENGTH_LONG).show();
+                        showDialogMessage("Senhas não correspondem.");
                     }
                 }else{
-                    Toast.makeText(CadastroUsuario.this, "Todos os campos são obrigatórios", Toast.LENGTH_LONG).show();
+                    showDialogMessage("Todos os campos são obrigatórios");
                 }
             }
         });
@@ -153,24 +152,6 @@ public class CadastroUsuario extends CommonActivity {
         }else{
             usuario.setTipo(2);
         }
-    }
-
-    private void disableEditText(EditText editText) {
-        editText.setEnabled(false);
-    }
-
-    private void enableEditText(EditText editText) {
-        editText.setEnabled(true);
-    }
-
-    private void disableButton(Button button) {
-        button.setVisibility(View.INVISIBLE);
-        button.setEnabled(false);
-    }
-
-    private void enableButton(Button button) {
-        button.setVisibility(View.VISIBLE);
-        button.setEnabled(true);
     }
 
     @Override
