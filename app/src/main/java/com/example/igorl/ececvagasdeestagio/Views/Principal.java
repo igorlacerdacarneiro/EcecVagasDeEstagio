@@ -2,6 +2,7 @@ package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class Principal extends AppCompatActivity {
     private TextView email;
     private Usuario mUsers;
 
+    private Toolbar mToobar;
+
     Gson gson = new Gson();
 
     private FirebaseAuth firebaseAuth;
@@ -39,19 +42,15 @@ public class Principal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
 
+        mToobar = (Toolbar) findViewById(R.id.toolbar_principal);
+        mToobar.setTitle("ECEC Vagas de Estágio");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+
         nome = (TextView) findViewById(R.id.usuarioNome);
         email = (TextView) findViewById(R.id.usuarioEmail);
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
         firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
-
-        nome.setText("id: "+ firebaseAuth.getCurrentUser().getUid());
-        email.setText("Email: "+ firebaseAuth.getCurrentUser().getEmail());
 
         firebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos").child(firebaseAuth.getCurrentUser().getUid());
         firebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -69,6 +68,16 @@ public class Principal extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        nome.setText("id: "+ firebaseAuth.getCurrentUser().getUid());
+        email.setText("Email: "+ firebaseAuth.getCurrentUser().getEmail());
+
     }
 
     @Override

@@ -1,17 +1,9 @@
 <resources>
 
-    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light">
+    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="CustomToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/colorPrimary</item>
-    </style>
-
-    <style name="CustomPopupStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

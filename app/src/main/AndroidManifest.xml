@@ -20,37 +20,33 @@
         </activity>
         <activity
             android:name=".Views.SolicitarCadastro"
-            android:label="@string/tela_cadastro" >
-        </activity>
-        <activity android:name=".Views.Principal" ></activity>
-        <activity
-            android:name=".Views.AdministracaoVagas"
-            android:label="@string/tela_admin_vagas" >
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity android:name=".Views.Principal" />
+
+        <activity android:name=".Views.AdministracaoVagas" />
+
         <activity
             android:name=".Views.CadastroVaga"
-            android:label="@string/tela_cadastro_vaga"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
-            android:name=".Views.AdministracaoUsuarios"
-            android:label="@string/tela_admin_user" >
-        </activity>
-        <activity
-            android:name=".Views.Perfil"
-            android:label="@string/tela_usuario" >
-        </activity>
-        <activity android:name=".Fragmentos.TabUsuarios" ></activity>
-        <activity android:name=".Fragmentos.TabAdmins" ></activity>
-        <activity android:name=".Fragmentos.TabDisponiveis" ></activity>
-        <activity android:name=".Fragmentos.TabEncerradas" ></activity>
-        <activity android:name=".Views.LinhaUsers" ></activity>
-        <activity android:name=".Views.LinhaVagas" ></activity>
-        <activity android:name=".Views.CadastroUsuario" ></activity>
-        <activity
-            android:name=".Views.RecuperarAcesso"
-            android:label="@string/recuperar_acesso">
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity android:name=".Views.AdministracaoUsuarios" />
+
+        <activity android:name=".Views.Perfil"/>
+
+        <activity android:name=".Fragmentos.TabUsuarios" />
+        <activity android:name=".Fragmentos.TabAdmins" />
+        <activity android:name=".Fragmentos.TabDisponiveis" />
+        <activity android:name=".Fragmentos.TabEncerradas" />
+
+        <activity android:name=".Views.LinhaUsers" />
+
+        <activity android:name=".Views.LinhaVagas" />
+
+        <activity android:name=".Views.CadastroUsuario" />
+
+        <activity android:name=".Views.RecuperarAcesso"/>
+
     </application>
 
 </manifest>

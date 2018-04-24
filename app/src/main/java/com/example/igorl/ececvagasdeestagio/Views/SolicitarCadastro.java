@@ -2,9 +2,11 @@ package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +44,8 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
     private RadioButton aluno;
     private Usuario usuario;
 
+    private Toolbar mToobar;
+
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -49,10 +53,11 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solicitar_cadastro);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        mToobar = (Toolbar) findViewById(R.id.toolbar_solicitar_cadastro);
+        mToobar.setTitle("Perfil");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 

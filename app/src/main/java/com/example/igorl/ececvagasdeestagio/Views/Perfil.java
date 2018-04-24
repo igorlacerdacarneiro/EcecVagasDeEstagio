@@ -2,6 +2,7 @@ package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -57,6 +58,8 @@ public class Perfil extends CommonActivity {
     private TextView confSenha;
     private Usuario usuario;
 
+    private Toolbar mToobar;
+
     Gson gson = new Gson();
 
     private FirebaseAuth firebaseAuth;
@@ -67,10 +70,11 @@ public class Perfil extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        mToobar = (Toolbar) findViewById(R.id.toolbar_perfil);
+        mToobar.setTitle("Perfil");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initViews();
 
