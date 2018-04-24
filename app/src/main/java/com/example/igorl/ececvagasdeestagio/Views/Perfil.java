@@ -25,6 +25,8 @@ import com.example.igorl.ececvagasdeestagio.Helper.Preferencias;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.github.rtoshiro.util.format.SimpleMaskFormatter;
+import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

@@ -21,12 +21,16 @@ import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.Models.Vaga;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
+import com.github.rtoshiro.util.format.SimpleMaskFormatter;
+import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
 public class CadastroUsuario extends CommonActivity {
+
+    public static final String FORMAT_MATRICULA = "####.#.########-##";
 
     private EditText editNome;
     private EditText editMatricula;
@@ -76,6 +80,12 @@ public class CadastroUsuario extends CommonActivity {
             editEmail.setText(usuario.getEmail());
             editSenha.setText(usuario.getSenha());
             editConfirmaSenha.setText(usuario.getSenha());
+        }else{
+
+            SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
+            MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
+            editMatricula.addTextChangedListener(maskTextWatcher);
+
         }
 
         editar.setOnClickListener(new View.OnClickListener() {

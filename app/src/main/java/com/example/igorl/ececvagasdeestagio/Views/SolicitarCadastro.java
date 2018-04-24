@@ -18,6 +18,8 @@ import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
+import com.github.rtoshiro.util.format.SimpleMaskFormatter;
+import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -57,6 +59,10 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
         initViews();
 
         tipoCadastro.setVisibility(View.INVISIBLE);
+
+        SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
+        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
+        editMatricula.addTextChangedListener(maskTextWatcher);
 
         solicitarCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
