@@ -6,14 +6,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.igorl.ececvagasdeestagio.Adapters.UserAdapter;
 import com.example.igorl.ececvagasdeestagio.Adapters.UsuarioAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
@@ -27,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TabAdmins extends Fragment {
 
@@ -38,12 +43,52 @@ public class TabAdmins extends Fragment {
     private AlertDialog alerta;
     private Usuario usuarioExcluir;
 
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerView;
+    private UserAdapter mUserAdapter;
+    private DatabaseReference mFirebaseDatabase;
+    private List<Usuario> mListUsers;
+
     Gson gson = new Gson();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         View view = inflater.inflate(R.layout.activity_tab_admins, container,false);
+
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_tab_admins);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewUsuariosAdmins);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mListUsers = new ArrayList<>();
+
+        mUserAdapter = new UserAdapter(getActivity(), mListUsers);
+
+        mRecyclerView.setAdapter(mUserAdapter);
+
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("administradores");
+        mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mListUsers.removeAll(mListUsers);
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Usuario usuario = snapshot.getValue(Usuario.class);
+                    mListUsers.add(usuario);
+                }
+                mUserAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /*
         listUsuarios = new ArrayList<Usuario>();
 
         listViewUsuarioAdmin = (ListView) view.findViewById(R.id.listViewUsuariosAdmins);
@@ -122,7 +167,7 @@ public class TabAdmins extends Fragment {
                 startActivityForResult(intent, 2);
 
             }
-        });
+        });*/
 
         return view;
     }
@@ -130,12 +175,12 @@ public class TabAdmins extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        firebase.removeEventListener(valueEventListenerUsuarios);
+        //firebase.removeEventListener(valueEventListenerUsuarios);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        firebase.addValueEventListener(valueEventListenerUsuarios);
+        //firebase.addValueEventListener(valueEventListenerUsuarios);
     }
 }

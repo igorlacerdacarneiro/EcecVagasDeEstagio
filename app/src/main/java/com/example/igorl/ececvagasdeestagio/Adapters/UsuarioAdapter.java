@@ -35,21 +35,23 @@ public class UsuarioAdapter extends ArrayAdapter<Usuario> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.activity_linha_users, parent, false);
 
-            TextView status = (TextView) view.findViewById(R.id.textViewStatusUser);
             TextView matricula = (TextView) view.findViewById(R.id.textViewMatriculaUser);
             TextView senha = (TextView) view.findViewById(R.id.textViewSenhaUser);
+            TextView nome = (TextView) view.findViewById(R.id.textViewNomeUser);
+            TextView email = (TextView) view.findViewById(R.id.textViewEmailUser);
 
             Usuario users2 = users.get(position);
 
             if(users2.getTipo() == 1 ){
-                //status.setText(String.valueOf(users2.getTipo()));
-                status.setText("Aluno");
                 matricula.setText(users2.getMatricula());
                 senha.setText(users2.getSenha());
+                nome.setText(users2.getNome());
+                email.setText(users2.getEmail());
             }else{
-                status.setText("Administrador");
                 matricula.setText(users2.getMatricula());
                 senha.setText(users2.getSenha());
+                nome.setText(users2.getNome());
+                email.setText(users2.getEmail());
             }
 
         }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.igorl.ececvagasdeestagio.Views.CadastroVaga">
+    tools:context="com.example.igorl.ececvagasdeestagio.UsuariosAprovados">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_cadastro_vaga"
+        android:id="@+id/toolbar_usuarios_aprovados"
         android:elevation="4dp"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
@@ -15,8 +15,5 @@
         android:background="@drawable/toolbar_rounded_corners"
         android:layout_margin="8dp"
         android:layout_alignParentLeft="true"/>
-
-    <include
-        layout="@layout/content_cadastro_vaga" />
 
 </LinearLayout>

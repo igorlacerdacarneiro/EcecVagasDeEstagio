@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +55,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,10 +90,13 @@ public class CadastroVaga extends CommonActivity{
     private Vaga vaga;
     private DatabaseReference firebaseReference;
     private StorageReference storageReference;
+    private Boolean validar = false;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private Uri mImageUri;
+
+    private Toolbar mToobar;
 
     Gson gson = new Gson();
 
@@ -99,10 +105,14 @@ public class CadastroVaga extends CommonActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_vaga);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_vaga);
+        mToobar.setTitle("Cadastro de Vaga");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progressBar = (ProgressBar) findViewById(R.id.progress_cadastro_vaga);
+        openProgressBar();
 
         storageReference = ConfiguracaoFirebase.getFirebaseStorage();
         firebaseReference = ConfiguracaoFirebase.getFirebase();
@@ -119,6 +129,8 @@ public class CadastroVaga extends CommonActivity{
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
+
+            validar = true;
 
             String result = b.getString("vaga");
 
@@ -142,6 +154,8 @@ public class CadastroVaga extends CommonActivity{
             horarioInicio.setText(aux[4]);
             horarioFim.setText(aux[6]);
 
+            Picasso.get().load(vaga.getImagem()).fit().centerInside().into(imagem);
+
             disableButton(salvar);
             horario1.setVisibility(View.INVISIBLE);
             horario2.setVisibility(View.INVISIBLE);
@@ -158,8 +172,10 @@ public class CadastroVaga extends CommonActivity{
             curso.setEnabled(false);
             dia.setEnabled(false);
             selecionarFoto.setVisibility(View.INVISIBLE);
+            closeProgressBar();
 
         }else{
+            closeProgressBar();
             /* SETAR O CODIGO DA VAGA AUTOMATICO */
             Calendar cod = Calendar.getInstance();
             codigo.setText(String.valueOf("v"+cod.get(Calendar.YEAR)+cod.get(Calendar.MONTH)+cod.get(Calendar.DAY_OF_MONTH)+cod.get(Calendar.HOUR_OF_DAY)+cod.get(Calendar.MINUTE)));
@@ -187,20 +203,26 @@ public class CadastroVaga extends CommonActivity{
 
                                     openProgressBar();
 
-                                    Calendar cod = Calendar.getInstance();
-                                    data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH) + "/" + cod.get(Calendar.MONTH) + "/" + cod.get(Calendar.YEAR) + " às " + cod.get(Calendar.HOUR_OF_DAY) + ":" + cod.get(Calendar.MINUTE)));
+                                    if(validar){
 
-                                    initUser();
-                                    salvarImagemFBStorage();
+                                    }else{
 
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            vaga.salvarVagaFBDatabase();
-                                            voltarAposSalvarVaga();
-                                        }
-                                    }, 5000);
+                                        Calendar cod = Calendar.getInstance();
+                                        data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH) + "/" + cod.get(Calendar.MONTH) + "/" + cod.get(Calendar.YEAR) + " às " + cod.get(Calendar.HOUR_OF_DAY) + ":" + cod.get(Calendar.MINUTE)));
+
+                                        initUser();
+                                        salvarImagemFBStorage();
+
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                vaga.salvarVagaFBDatabase();
+                                                voltarAposSalvarVaga();
+                                            }
+                                        }, 5000);
+
+                                    }
 
                                 } else {
                                     showDialogMessage("Valor da bolsa não pode ser zero.");
@@ -289,7 +311,6 @@ public class CadastroVaga extends CommonActivity{
     }
 
     protected void initViews(){
-        progressBar = (ProgressBar) findViewById(R.id.cadastro_vaga_progress);
         codigo = (TextView) findViewById(R.id.textViewCodigoVaga);
         curso = (Spinner) findViewById(R.id.spinnerVagaCurso) ;
         vagaStatus = (RadioGroup) findViewById(R.id.radioStatusVaga);

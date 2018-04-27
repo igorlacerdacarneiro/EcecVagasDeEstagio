@@ -11,6 +11,7 @@ import com.example.igorl.ececvagasdeestagio.Views.CadastroVaga;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -34,6 +35,7 @@ public class Vaga {
     private String informacoes;
     private String imagem;
     private String data;
+    private String key;
 
     public Vaga() {
     }
@@ -174,6 +176,16 @@ public class Vaga {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void salvarVagaFBDatabase(){

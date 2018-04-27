@@ -13,6 +13,18 @@
         app:showAsAction="never" >
     </item>
 
+    <!--<item
+        android:id="@+id/action_usuarios_solicitados"
+        android:title="@string/usuarios_solicitados"
+        app:showAsAction="never" >
+    </item>
+
+    <item
+        android:id="@+id/action_usuarios_aprovados"
+        android:title="@string/usuarios_aprovados"
+        app:showAsAction="never" >
+    </item>-->
+
     <item
         android:id="@+id/action_perfil"
         android:title="@string/perfil"

@@ -12,41 +12,39 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyTheme">
-        <activity android:name=".Views.Login">
+        <activity
+            android:name=".Views.Login"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Views.SolicitarCadastro"
             android:windowSoftInputMode="stateHidden" />
-
         <activity android:name=".Views.Principal" />
-
         <activity android:name=".Views.AdministracaoVagas" />
-
         <activity
             android:name=".Views.CadastroVaga"
             android:windowSoftInputMode="stateHidden" />
-
         <activity android:name=".Views.AdministracaoUsuarios" />
-
-        <activity android:name=".Views.Perfil"/>
-
+        <activity android:name=".Views.Perfil" />
         <activity android:name=".Fragmentos.TabUsuarios" />
         <activity android:name=".Fragmentos.TabAdmins" />
         <activity android:name=".Fragmentos.TabDisponiveis" />
         <activity android:name=".Fragmentos.TabEncerradas" />
-
         <activity android:name=".Views.LinhaUsers" />
-
         <activity android:name=".Views.LinhaVagas" />
-
-        <activity android:name=".Views.CadastroUsuario" />
-
-        <activity android:name=".Views.RecuperarAcesso"/>
-
+        <activity
+            android:name=".Views.CadastroUsuario"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Views.RecuperarAcesso"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".UsuariosSolicitados" />
+        <activity android:name=".UsuariosAprovados"></activity>
     </application>
 
 </manifest>

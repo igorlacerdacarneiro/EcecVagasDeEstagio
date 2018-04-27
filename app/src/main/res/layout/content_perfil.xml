@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp">
+    android:layout_margin="20dp" >
 
     <ProgressBar
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/solicitar_cadastro_progress"
+        android:id="@+id/usuario_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -23,98 +23,109 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textView23"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:text="@string/nome" />
-
             <EditText
-                android:id="@+id/editTextNome"
+                android:id="@+id/textNomeUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/textView26"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:text="@string/matricula" />
-
             <EditText
-                android:id="@+id/editTextMatricula"
+                android:id="@+id/textMatriculaUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberSigned" />
+                android:inputType="textPersonName" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/textView25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:text="@string/email" />
 
             <EditText
-                android:id="@+id/editTextEmail"
+                android:id="@+id/textEmailUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/textView24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:text="@string/senha" />
 
             <EditText
-                android:id="@+id/editTextSenha"
+                android:id="@+id/textSenhaUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPersonName" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/textView27"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:text="@string/confirmar_senha" />
 
             <EditText
-                android:id="@+id/editTextConfirmarSenha"
+                android:id="@+id/textConfirmarSenhaUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPersonName" />
 
+            <TextView
+                android:id="@+id/textViewTipoUsuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tipo_usuario" />
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButtonCadastro"
+                android:id="@+id/radioButtonUsuariosTipo"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radioCadastroAluno"
+                    android:id="@+id/radioUsuarioTipoAluno"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/aluno"
                     android:checked="true" />
 
                 <RadioButton
-                    android:id="@+id/radioCadastroAdmin"
+                    android:id="@+id/radioUsuarioTipoAdmin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/administrador" />
 
             </RadioGroup>
 
-            <Button
-                android:id="@+id/botaoSolicitar"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/solicitar" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/botaoSalvarUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/salvar" />
+
+                <Button
+                    android:id="@+id/botaoEditarUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/editar" />
+
+            </RelativeLayout>
 
         </LinearLayout>
+
 
     </ScrollView>
 

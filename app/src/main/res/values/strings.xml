@@ -22,6 +22,8 @@
     <string name="administrador">Administrador</string>
     <string name="disponivel">Disponível</string>
     <string name="encerrada">Encerrada</string>
+    <string name="usuarios_solicitados">Usuários Solicitados</string>
+    <string name="usuarios_aprovados">Usuários Aprovados</string>
 
     <!-- Text View -->
     <string name="empresa">Empresa:</string>

@@ -112,6 +112,30 @@ public class Usuario {
         }
     }
 
+    /*public void salvarUserSolicitadoFBDatabase(DatabaseReference.CompletionListener... completionListener){
+        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+        referenciaFirebase = referenciaFirebase.child("usuarios").child("solicitados");
+
+        if( completionListener.length == 0 ){
+            referenciaFirebase.child(String.valueOf(getNome())).setValue(this);
+        }
+        else{
+            referenciaFirebase.child(String.valueOf(getNome())).setValue(this, completionListener[0]);
+        }
+    }
+
+    public void salvarUserAprovadosFBDatabase(DatabaseReference.CompletionListener... completionListener){
+        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+        referenciaFirebase = referenciaFirebase.child("usuarios").child("aprovados");
+
+        if( completionListener.length == 0 ){
+            referenciaFirebase.child(String.valueOf(getId())).setValue(this);
+        }
+        else{
+            referenciaFirebase.child(String.valueOf(getId())).setValue(this, completionListener[0]);
+        }
+    }*/
+
     public void salvarUserFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
         if(getTipo() == 1){

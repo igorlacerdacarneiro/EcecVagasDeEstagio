@@ -21,68 +21,74 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/email_login_form"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView3"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="@string/app"
-            android:textSize="35sp"
-            android:layout_marginBottom="80px"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/email"
-            android:textSize="15sp" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="@string/app"
+                android:textSize="35sp"
+                android:layout_marginBottom="80px"/>
 
-        <EditText
-            android:id="@+id/campoEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email"
+                android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/senha"
-            android:textSize="15sp" />
+            <EditText
+                android:id="@+id/campoEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
 
-        <EditText
-            android:id="@+id/campoSenha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/senha"
+                android:textSize="15sp" />
 
-        <Button
-            android:id="@+id/botaoLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/entrar"
-            android:layout_marginTop="80px"/>
+            <EditText
+                android:id="@+id/campoSenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
 
-        <TextView
-            android:id="@+id/textViewRecuperarSenha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/esqueci_senha" />
+            <Button
+                android:id="@+id/botaoLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/entrar"
+                android:layout_marginTop="80px"/>
 
-        <Button
-            android:id="@+id/botaoCadastrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/cadastar" />
+            <TextView
+                android:id="@+id/textViewRecuperarSenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/esqueci_senha" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/botaoCadastrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cadastar" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
 
 </RelativeLayout>

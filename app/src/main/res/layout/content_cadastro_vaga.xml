@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="20dp">
+
+    <ProgressBar
+        android:layout_centerHorizontal="true"
+        android:id="@+id/progress_cadastro_vaga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- CÓDIGO VAGA -->
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/codigo" />
+            <TextView
+                android:id="@+id/textViewCodigoVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- CURSO VAGA -->
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cursos" />
+            <Spinner
+                android:id="@+id/spinnerVagaCurso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- STATUS VAGA -->
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/status_vaga" />
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/radioStatusVaga" >
+
+                <RadioButton
+                    android:id="@+id/radioStatusVagaDisponivel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disponivel"
+                    android:checked="true" />
+                <RadioButton
+                    android:id="@+id/radioStatusVagaEncerrada"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Encerrada" />
+            </RadioGroup>
+
+            <!-- EMPRESA VAGA -->
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/empresa" />
+            <EditText
+                android:id="@+id/editVagaEmpresa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+
+            <!-- LOCAL VAGA -->
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/local_vaga" />
+            <EditText
+                android:id="@+id/editVagaLocal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+
+            <!-- TITULO VAGA -->
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titulo" />
+
+            <EditText
+                android:id="@+id/editVagaTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+
+            <!-- DIA VAGA -->
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dia" />
+            <Spinner
+                android:id="@+id/spinnerVagaDia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- HORARIO VAGA -->
+            <TextView
+                android:id="@+id/textView38"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/horario" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textViewVagaHorario1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/selecione"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/textViewVagaHorario2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/selecione"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textViewVagaHorarioInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/textViewVagaHorarioFim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <!-- ATIVIDADES VAGA -->
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/atividades_vaga" />
+            <EditText
+                android:id="@+id/editVagaAtividades"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+
+            <!-- REQUISITOS VAGA -->
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/requisitos_vaga" />
+            <EditText
+                android:id="@+id/editVagaRequisitos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+
+            <!-- NUMERO VAGA -->
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/numero_vaga" />
+            <EditText
+                android:id="@+id/editVagaNumero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+
+            <!-- VALOR BOLSA VAGA -->
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/valor_bolsa_vaga" />
+            <EditText
+                android:id="@+id/editVagaValor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+            <!-- INFORMAÇÕES VAGA -->
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/informacoes_vaga" />
+            <EditText
+                android:id="@+id/editVagaInformacoes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+
+            <!-- IMAGEM VAGA -->
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/imagem_vaga" />
+            <TextView
+                android:id="@+id/textViewSelecionarFoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:text="@string/selecione" />
+            <ImageView
+                android:id="@+id/imagemDivulgacaoVaga"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+            <!-- DATA VAGA -->
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/data_vaga" />
+            <TextView
+                android:id="@+id/textViewDataVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/botaoSalvarVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/salvar" />
+
+                <Button
+                    android:id="@+id/botaoEditarVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/editar" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

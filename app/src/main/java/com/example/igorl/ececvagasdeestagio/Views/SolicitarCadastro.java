@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -54,7 +55,7 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
         setContentView(R.layout.activity_solicitar_cadastro);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_solicitar_cadastro);
-        mToobar.setTitle("Perfil");
+        mToobar.setTitle("Solicitar Cadastro");
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -81,13 +82,13 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
                             initUser();
                             cadastrarUsuarioFirebase();
                         }else{
-                            Toast.makeText(SolicitarCadastro.this, "E-mail digitado não é e-mail", Toast.LENGTH_SHORT).show();
+                            showDialogMessage("E-mail digitado não é um e-mail valido.");
                         }
                     }else {
-                        Toast.makeText(SolicitarCadastro.this, "Senhas não correspondem", Toast.LENGTH_LONG).show();
+                        showDialogMessage("Senhas não correspondem.");
                     }
                 }else{
-                    Toast.makeText(SolicitarCadastro.this, "Todos os campos são obrigatórios", Toast.LENGTH_LONG).show();
+                    showDialogMessage("Todos os campos são obrigatórios.");
                 }
             }
         });

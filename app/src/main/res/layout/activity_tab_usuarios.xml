@@ -7,18 +7,20 @@
     tools:context="com.example.igorl.ececvagasdeestagio.Fragmentos.TabUsuarios">
 
     <ProgressBar
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tab_usuario_progress"
+        android:id="@+id/progress_tab_usuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:layout_centerInParent="true"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerViewUsuariosAlunos" />
+
+    <!--<ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/listViewUsuariosAlunos">
-    </ListView>
+    </ListView>-->
 
 </RelativeLayout>

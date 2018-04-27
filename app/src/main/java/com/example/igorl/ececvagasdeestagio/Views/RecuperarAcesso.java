@@ -2,9 +2,11 @@ package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,16 +26,18 @@ public class RecuperarAcesso extends CommonActivity {
     private Button enviar;
     private EditText email;
     private FirebaseAuth firebaseAuth;
+    private Toolbar mToobar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recuperar_acesso);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        mToobar = (Toolbar) findViewById(R.id.toolbar_recuperar_acesso);
+        mToobar.setTitle("Recuperar Senha");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
         initViews();

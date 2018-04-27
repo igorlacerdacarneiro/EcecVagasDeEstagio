@@ -2,9 +2,11 @@ package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +26,13 @@ import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
-public class CadastroUsuario extends CommonActivity {
+public class CadastroUsuario extends CommonActivity implements DatabaseReference.CompletionListener{
 
     public static final String FORMAT_MATRICULA = "####.#.########-##";
 
@@ -45,6 +49,9 @@ public class CadastroUsuario extends CommonActivity {
     private Usuario usuario;
     private TextView confirmaSenha;
     private FirebaseAuth firebaseAuth;
+    private Boolean validar = false;
+
+    private Toolbar mToobar;
 
     Gson gson = new Gson();
 
@@ -53,10 +60,11 @@ public class CadastroUsuario extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_usuario);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_usuario);
+        mToobar.setTitle("Cadastro de Usuário");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
@@ -64,6 +72,7 @@ public class CadastroUsuario extends CommonActivity {
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
+            validar = true;
             modoEditar();
 
             String result = b.getString("usuario");
@@ -81,6 +90,7 @@ public class CadastroUsuario extends CommonActivity {
             editSenha.setText(usuario.getSenha());
             editConfirmaSenha.setText(usuario.getSenha());
         }else{
+            disableButton(editar);
 
             SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
             MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
@@ -111,9 +121,14 @@ public class CadastroUsuario extends CommonActivity {
                     if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
                         openProgressBar();
                         initUser();
-                        usuario.updateUserFBDatabase();
-                        firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
-                        salvarDadosUsuario();
+                        if(validar){
+                            usuario.updateUserFBDatabase();
+                            firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
+                        }else{
+                            usuario.salvarUserFBDatabase();
+                        }
+
+                        //salvarDadosUsuario();
                     }else {
                         showDialogMessage("Senhas não correspondem.");
                     }
@@ -191,6 +206,14 @@ public class CadastroUsuario extends CommonActivity {
     }
 
     public void salvarDadosUsuario(){
+        Intent intent = new Intent(CadastroUsuario.this, AdministracaoUsuarios.class);
+        startActivity(intent);
+        closeProgressBar();
+        finish();
+    }
+
+    @Override
+    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
         Intent intent = new Intent(CadastroUsuario.this, AdministracaoUsuarios.class);
         startActivity(intent);
         closeProgressBar();

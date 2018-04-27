@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="com.example.igorl.ececvagasdeestagio.Views.Perfil">
 
     <android.support.v7.widget.Toolbar
@@ -17,123 +17,7 @@
         android:layout_margin="8dp"
         android:layout_alignParentLeft="true"/>
 
-    <ProgressBar
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/usuario_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+    <include
+        layout="@layout/content_perfil" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="30px">
-
-        <TextView
-            android:id="@+id/textViewTipoUsuario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tipo_usuario" />
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonUsuariosTipo"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/radioUsuarioTipoAluno"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/aluno"
-                android:checked="true" />
-
-            <RadioButton
-                android:id="@+id/radioUsuarioTipoAdmin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/administrador" />
-
-        </RadioGroup>
-
-        <TextView
-            android:id="@+id/textView23"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/nome" />
-        <EditText
-            android:id="@+id/textNomeUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/textView26"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/matricula" />
-        <EditText
-            android:id="@+id/textMatriculaUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/textView25"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/email" />
-
-        <EditText
-            android:id="@+id/textEmailUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
-
-        <TextView
-            android:id="@+id/textView24"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/senha" />
-
-        <EditText
-            android:id="@+id/textSenhaUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/textView27"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/confirmar_senha" />
-
-        <EditText
-            android:id="@+id/textConfirmarSenhaUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/botaoSalvarUsuario"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/salvar" />
-
-            <Button
-                android:id="@+id/botaoEditarUsuario"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/editar" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

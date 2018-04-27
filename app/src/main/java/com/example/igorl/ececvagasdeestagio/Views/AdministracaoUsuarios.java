@@ -1,11 +1,13 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -18,16 +20,18 @@ public class AdministracaoUsuarios extends AppCompatActivity {
     private TabLayout mTabLayoutUsuarios;
     private ViewPager mViewPagerUsuarios;
     private FloatingActionButton addUsuarios;
+    private Toolbar mToobar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administracao_usuarios);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        mToobar = (Toolbar) findViewById(R.id.toolbar_admin_usuarios);
+        mToobar.setTitle("Administração de Usuários");
+        mToobar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToobar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mTabLayoutUsuarios = (TabLayout) findViewById(R.id.tabLayoutUsuarios);
         mViewPagerUsuarios = (ViewPager) findViewById(R.id.viewPagerUsuarios);

@@ -6,38 +6,43 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.Adapters.VagaAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
-import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.Models.Vaga;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.RecyclerTouchListener;
 import com.example.igorl.ececvagasdeestagio.Views.CadastroVaga;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TabEncerradas extends Fragment {
 
-    private ListView listViewVagasEnc; //listView
-    private ArrayAdapter<Vaga> adapterVagas; //adapter
-    private ArrayList<Vaga> listVagas; //produtos
-    private DatabaseReference firebase;
-    private ValueEventListener valueEventListenerVagas;
     private AlertDialog alerta;
-    private Vaga vagaExcluir;
+    private Vaga mVaga;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerView;
+    private VagaAdapter mVagaAdapter;
+    private DatabaseReference mFirebaseDatabase;
+    private FirebaseStorage mFirebaseStorage;
+    private List<Vaga> mListVagas;
+    private ValueEventListener mDBListerner;
 
     Gson gson = new Gson();
 
@@ -46,48 +51,67 @@ public class TabEncerradas extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         View view = inflater.inflate(R.layout.activity_tab_encerradas, container,false);
 
-        listVagas = new ArrayList<>();
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_tab_encerradas);
 
-        listViewVagasEnc = (ListView) view.findViewById(R.id.listViewVagaEncerradas);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewVagaEncerradas);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapterVagas = new VagaAdapter(getActivity(), listVagas);
+        mListVagas = new ArrayList<>();
 
-        listViewVagasEnc.setAdapter(adapterVagas);
+        mVagaAdapter = new VagaAdapter(getActivity(), mListVagas);
 
-        firebase = ConfiguracaoFirebase.getFirebase().child("vagas").child("encerradas");
-        valueEventListenerVagas = new ValueEventListener() {
+        mRecyclerView.setAdapter(mVagaAdapter);
+
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("vagas").child("encerradas");
+        mDBListerner = mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                listVagas.clear();
-                for(DataSnapshot dados : dataSnapshot.getChildren()){
-
-                    Vaga vagaNova = dados.getValue(Vaga.class);
-
-                    listVagas.add(vagaNova);
+                mListVagas.removeAll(mListVagas);
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Vaga vaga = snapshot.getValue(Vaga.class);
+                    vaga.setKey(snapshot.getKey());
+                    mListVagas.add(vaga);
                 }
-
-                adapterVagas.notifyDataSetChanged();
+                mVagaAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                mVaga = mListVagas.get(position);
+                Intent intent = new Intent(getActivity(), CadastroVaga.class);
+                intent.putExtra("vaga",gson.toJson(mVaga));
+                startActivityForResult(intent, 2);
 
             }
-        };
 
-        listViewVagasEnc.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                vagaExcluir = adapterVagas.getItem(i);
+            public void onLongClick(View view, int position) {
+                mVaga = mListVagas.get(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Confirma Exclusão?");
-                builder.setMessage("Você deseja excluir: " + vagaExcluir.getTitulo() + " ?");
+                builder.setMessage("Você deseja excluir a vaga: " + mVaga.getCodigo() + " ?");
                 builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        firebase = ConfiguracaoFirebase.getFirebase().child("vagas").child("encerradas");
-                        firebase.child(String.valueOf(vagaExcluir.getCodigo())).removeValue();
-                        Toast.makeText(getActivity(), "Exclusão efetuada", Toast.LENGTH_LONG).show();
+                        StorageReference imageRef = mFirebaseStorage.getReferenceFromUrl(mVaga.getImagem());
+                        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mFirebaseDatabase.child(mVaga.getCodigo()).removeValue();
+                                Toast.makeText(getActivity(), "Exclusão efetuada", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
 
@@ -100,37 +124,16 @@ public class TabEncerradas extends Fragment {
 
                 alerta = builder.create();
                 alerta.show();
-                return true;
             }
-        });
-
-        listViewVagasEnc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                vagaExcluir = adapterVagas.getItem(i);
-
-                Intent intent = new Intent(getActivity(), CadastroVaga.class);
-
-                intent.putExtra("vaga",gson.toJson(vagaExcluir));
-                startActivityForResult(intent, 2);
-
-            }
-        });
+        }));
 
         return view;
 
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        firebase.removeEventListener(valueEventListenerVagas);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        firebase.addValueEventListener(valueEventListenerVagas);
+    public void onDestroy() {
+        super.onDestroy();
+        mFirebaseDatabase.removeEventListener(mDBListerner);
     }
 }
