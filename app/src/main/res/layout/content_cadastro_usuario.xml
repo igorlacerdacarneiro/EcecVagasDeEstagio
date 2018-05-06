@@ -92,7 +92,7 @@
                 android:id="@+id/textSenhaCadastroUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:inputType="textPassword" />
 
             <TextView
                 android:id="@+id/textView27"
@@ -104,25 +104,13 @@
                 android:id="@+id/textConfirmarSenhaCadastroUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:inputType="textPassword" />
 
-            <RelativeLayout
+            <Button
+                android:id="@+id/botaoSalvarCadastroUser"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/botaoSalvarCadastroUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/salvar" />
-
-                <Button
-                    android:id="@+id/botaoEditarCadastroUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/editar" />
-
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:text="@string/salvar" />
 
         </LinearLayout>
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.igorl.ececvagasdeestagio.UsuariosSolicitados">
+    tools:context="com.example.igorl.ececvagasdeestagio.Views.UsuariosSolicitados">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_usuarios_solicitados"
@@ -17,12 +17,23 @@
         android:layout_margin="8dp"
         android:layout_alignParentLeft="true"/>
 
+    <TextView
+        android:id="@+id/textViewTextoVazio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_usuarios_solicitados"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        android:text="@string/sem_usu_rios" />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_usuarios_solicitados"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:id="@+id/recyclerViewUsuariosSolicitados" />
 
-</LinearLayout>
+</RelativeLayout>

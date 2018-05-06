@@ -197,4 +197,18 @@ public class Vaga {
         }
     }
 
+    public boolean isVagaDisponivel(int tipo){
+        if(tipo == 1){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isVagaEncerrada(int tipo){
+        if(tipo == 2){
+            return true;
+        }
+        return false;
+    }
+
 }

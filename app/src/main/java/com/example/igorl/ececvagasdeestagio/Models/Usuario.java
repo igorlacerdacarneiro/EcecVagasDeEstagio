@@ -1,11 +1,6 @@
 package com.example.igorl.ececvagasdeestagio.Models;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
-import com.example.igorl.ececvagasdeestagio.Helper.Preferencias;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
@@ -112,15 +107,15 @@ public class Usuario {
         }
     }
 
-    /*public void salvarUserSolicitadoFBDatabase(DatabaseReference.CompletionListener... completionListener){
+    public void salvarUserSolicitadoFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
         referenciaFirebase = referenciaFirebase.child("usuarios").child("solicitados");
 
         if( completionListener.length == 0 ){
-            referenciaFirebase.child(String.valueOf(getNome())).setValue(this);
+            referenciaFirebase.child(String.valueOf(getId())).setValue(this);
         }
         else{
-            referenciaFirebase.child(String.valueOf(getNome())).setValue(this, completionListener[0]);
+            referenciaFirebase.child(String.valueOf(getId())).setValue(this, completionListener[0]);
         }
     }
 
@@ -134,7 +129,7 @@ public class Usuario {
         else{
             referenciaFirebase.child(String.valueOf(getId())).setValue(this, completionListener[0]);
         }
-    }*/
+    }
 
     public void salvarUserFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
@@ -152,8 +147,9 @@ public class Usuario {
         }
     }
 
-    public void updateUserFBDatabase(){
+    public void updateUserFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+        //referenciaFirebase = referenciaFirebase.child("usuarios").child("aprovados");
 
         if(getTipo() == 1){
             referenciaFirebase = referenciaFirebase.child("usuarios").child("alunos").child(getId());
@@ -168,6 +164,18 @@ public class Usuario {
             return;
         }
 
-        referenciaFirebase.updateChildren(map);
+        if( completionListener.length == 0 ){
+            referenciaFirebase.updateChildren(map);
+        }
+        else{
+            referenciaFirebase.updateChildren(map, completionListener[0]);
+        }
+    }
+
+    public boolean isUsuarioAdministrador(){
+        if(getTipo() == 2){
+            return true;
+        }
+        return false;
     }
 }

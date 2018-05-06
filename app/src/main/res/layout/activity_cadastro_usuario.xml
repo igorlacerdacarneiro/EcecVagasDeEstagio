@@ -17,6 +17,6 @@
         android:layout_alignParentLeft="true"/>
 
     <include
-        layout="@layout/content_cadastro_usuario" />
+        layout="@layout/content_perfil" />
 
 </LinearLayout>

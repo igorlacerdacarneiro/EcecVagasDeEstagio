@@ -1,29 +1,35 @@
 <resources>
     <!-- Botões -->
-    <string name="entrar">ENTRAR</string>
-    <string name="solicitar">SOLICITAR</string>
-    <string name="salvar">SALVAR</string>
-    <string name="editar">EDITAR</string>
-    <string name="excluir">EXCLUIR</string>
+    <string name="entrar">Entrar</string>
+    <string name="solicitar">Solicitar</string>
+    <string name="salvar">Salvar</string>
     <string name="perfil">Perfil</string>
     <string name="sair">Sair</string>
-    <string name="enviar">ENVIAR</string>
-
-    <!-- Outros -->
-    <string name="cadastar">Cadastrar</string>
-    <string name="app">ECEC \n Estágios</string>
-    <string name="usuarios">Usuários</string>
-    <string name="admins">Administradores</string>
-    <string name="vagas">Vagas</string>
+    <string name="enviar">Enviar</string>
     <string name="adminUser">Administração de Usuários</string>
     <string name="adminVagas">Administração de Vagas</string>
-    <string name="app_name">Vagas de Estágio</string>
-    <string name="aluno">Aluno</string>
+
+    <!-- Titulo Telas -->
+    <string name="cadastar">Solicitar Cadastro</string>
+    <string name="usuarios_solicitados">Usuários Solicitantes</string>
+    <string name="usuarios_aprovados">Usuários Aprovados</string>
+    <string name="recuperar_acesso">Recuperar Senha</string>
+    <string name="tela_editar_vaga">Cadastro de Vaga</string>
+    <string name="tela_cadastro_vaga">Cadastro de Vaga</string>
+    <string name="tela_editar_usuario">Cadastro de Usuário</string>
+    <string name="tela_cadastro_usuario">Cadastro de Usuário</string>
+
+    <!-- Outros -->
+    <string name="app">ECEC Estágios</string>
+    <string name="usuarios">Usuários</string>
+    <string name="admins">Administradores</string>
     <string name="administrador">Administrador</string>
     <string name="disponivel">Disponível</string>
     <string name="encerrada">Encerrada</string>
-    <string name="usuarios_solicitados">Usuários Solicitados</string>
-    <string name="usuarios_aprovados">Usuários Aprovados</string>
+
+    <string name="vagas">Vagas</string>
+    <string name="app_name">Vagas de Estágio</string>
+    <string name="aluno">Aluno</string>
 
     <!-- Text View -->
     <string name="empresa">Empresa:</string>
@@ -46,21 +52,14 @@
     <string name="valor_bolsa_vaga">Valor da Bolsa: </string>
     <string name="informacoes_vaga">Informações: </string>
     <string name="imagem_vaga">Imagem de Divulgação: </string>
-    <string name="data_vaga">Data: </string>
+    <string name="data_vaga">Data de Cadastro: </string>
     <string name="status">Status: </string>
     <string name="tipo_usuario">Tipo Usuário: </string>
-    <string name="selecione">SELECIONAR </string>
+    <string name="selecione">SELECIONAR FOTO</string>
     <string name="codigo">Código Vaga: </string>
     <string name="esqueci_senha">Esqueci minha senha</string>
-
-    <!-- Titulo Telas -->
-    <string name="tela_cadastro">Cadastro</string>
-    <string name="tela_vagas">Vagas</string>
-    <string name="tela_admin_user">Administração de Usuários</string>
-    <string name="tela_admin_vagas">Administração de Vagas</string>
-    <string name="tela_usuario">Usuário</string>
-    <string name="tela_cadastro_vaga">Cadastro de Vaga</string>
-    <string name="recuperar_acesso">Recuperar Senha</string>
+    <string name="selecionar_inicio">SELECIONAR INÍCIO</string>
+    <string name="selecionar_termino">SELECIONAR TÉRMINO</string>
 
     <!-- Arrays -->
     <string-array name="titulo_tab">
@@ -86,9 +85,6 @@
         <item>Seg. à Sáb.</item>
     </string-array>
 
-    <string name="settings_name">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sem_usu_rios">Sem usuários</string>
 
 </resources>

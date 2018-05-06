@@ -18,8 +18,9 @@ import com.example.igorl.ececvagasdeestagio.Adapters.VagaAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Vaga;
 import com.example.igorl.ececvagasdeestagio.R;
-import com.example.igorl.ececvagasdeestagio.RecyclerTouchListener;
+import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.example.igorl.ececvagasdeestagio.Views.CadastroVaga;
+import com.example.igorl.ececvagasdeestagio.Views.EditarVaga;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -91,9 +92,9 @@ public class TabDisponiveis extends Fragment {
             public void onClick(View view, int position) {
 
                 mVaga = mListVagas.get(position);
-                Intent intent = new Intent(getActivity(), CadastroVaga.class);
+                Intent intent = new Intent(getActivity(), EditarVaga.class);
                 intent.putExtra("vaga",gson.toJson(mVaga));
-                startActivityForResult(intent, 2);
+                startActivity(intent);
 
             }
 

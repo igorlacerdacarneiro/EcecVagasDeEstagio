@@ -11,8 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
-import com.example.igorl.ececvagasdeestagio.Helper.Base64Custom;
-import com.example.igorl.ececvagasdeestagio.Helper.Preferencias;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
@@ -22,7 +20,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 public class Login extends CommonActivity {
 
@@ -32,17 +33,15 @@ public class Login extends CommonActivity {
     private Button botaoCadastrar;
     private Usuario usuario;
     private TextView esqueciSenha;
-
-    private FirebaseDatabase firebase;
-    private FirebaseAuth autenticacao;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mFirebaseDatabase;
+    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
         initViews();
 
@@ -52,13 +51,9 @@ public class Login extends CommonActivity {
             @Override
             public void  onClick(View v){
                 if(!email.getText().toString().equals("") && !senha.getText().toString().equals("")){
-                    if(isEmailValid(email.getText().toString())){
-                        openProgressBar();
-                        initUser();
-                        validarLogin();
-                    }else{
-                        Toast.makeText(Login.this, "E-mail digitado não é e-mail", Toast.LENGTH_SHORT).show();
-                    }
+                    openProgressBar();
+                    initUser();
+                    login();
                 }else{
                     Toast.makeText(Login.this, "Preencha os campos de E-mail e Senha", Toast.LENGTH_SHORT).show();
                 }
@@ -82,8 +77,9 @@ public class Login extends CommonActivity {
         });
     }
 
-    private void validarLogin(){
-        autenticacao.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    private void login(){
+
+        mFirebaseAuth.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
@@ -98,7 +94,7 @@ public class Login extends CommonActivity {
                     }catch (FirebaseAuthInvalidUserException e){
                         erroExcessao = "E-mail incorreto ou não cadastrado.";
                     }catch (Exception e){
-                        erroExcessao = "ERRO";
+                        erroExcessao = "ERRO 500";
                         e.printStackTrace();
                     }
                     Toast.makeText(Login.this, erroExcessao, Toast.LENGTH_SHORT).show();
@@ -131,10 +127,37 @@ public class Login extends CommonActivity {
     }
 
     private void verificarUserLogado(){
-        if(autenticacao.getCurrentUser() != null){
+        if(mFirebaseAuth.getCurrentUser() != null){
             Intent intent = new Intent(Login.this, Principal.class);
             startActivity(intent);
             finish();
         }
     }
+
+    private void entryLogin(){
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("aprovados").child(email.getText().toString());
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(Usuario.class) != null){
+                    usuario = dataSnapshot.getValue(Usuario.class);
+                    if(usuario.getSenha().equals(senha.getText().toString())){
+                        abrirTelaPrincipal();
+                    }else{
+                        closeProgressBar();
+                        Toast.makeText(Login.this, "Senha incorreta", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    closeProgressBar();
+                    Toast.makeText(Login.this, "Matricula incorreta ou usuário não existe", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(Login.this, "Erro ao acessar banco de dados", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }

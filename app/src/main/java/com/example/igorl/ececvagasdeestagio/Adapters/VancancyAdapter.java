@@ -1,6 +1,9 @@
 package com.example.igorl.ececvagasdeestagio.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +44,7 @@ public class VancancyAdapter extends RecyclerView.Adapter<VancancyAdapter.VagaVi
     @Override
     public void onBindViewHolder(VancancyAdapter.VagaViewHolder holder, int position) {
         Vaga vagasCurrent = mListVagas.get(position);
-        Picasso.get()
-                .load(vagasCurrent.getImagem())
-                .fit()
-                .centerCrop()
-                .into(holder.imageDivulgacao);
+        Picasso.get().load(vagasCurrent.getImagem()).fit().centerCrop().into(holder.imageDivulgacao);
         holder.textTitulo.setText(vagasCurrent.getTitulo());
         holder.textLocal.setText(vagasCurrent.getLocal());
         holder.textEmpresa.setText(vagasCurrent.getEmpresa());

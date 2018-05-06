@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.igorl.ececvagasdeestagio.Views.VagaActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_vaga_selecionada"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:layout_alignParentTop="true"
+            android:id="@+id/imagemViewDivulgacaoDaVaga"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:transitionName="element1"/>
+
+        <TextView
+            android:id="@+id/textViewTituloDaVaga"
+            android:layout_below="@+id/imagemViewDivulgacaoDaVaga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="element2"
+            android:paddingLeft="16dp"
+            android:paddingTop="24dp"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/textViewLocalDaVaga"
+            android:layout_below="@+id/textViewTituloDaVaga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="element3"
+            android:paddingLeft="16dp"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/textViewEmpresaDaVaga"
+            android:layout_below="@id/textViewLocalDaVaga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="element4"
+            android:paddingLeft="16dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/textViewHorarioDaVaga"
+            android:layout_below="@+id/textViewEmpresaDaVaga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="element5"
+            android:paddingLeft="16dp"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_vagas_transition"
+            android:layout_below="@+id/textViewHorarioDaVaga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewAtividadesDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:textSize="14sp"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/textViewRequisitosDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:textSize="14sp"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/textViewNumeroDeVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:textSize="14sp"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/textViewValorBolsaDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:textSize="14sp"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/textViewInformacoesDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingBottom="24dp"
+                android:textSize="14sp"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_vaga_activity"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_margin="8dp" />
+
+    </RelativeLayout>
+
+</ScrollView>

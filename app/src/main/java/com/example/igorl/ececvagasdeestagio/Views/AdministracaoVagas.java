@@ -28,7 +28,7 @@ public class AdministracaoVagas extends AppCompatActivity {
         setContentView(R.layout.activity_administracao_vagas);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_admin_vagas);
-        mToobar.setTitle("Administração de Vagas");
+        mToobar.setTitle(R.string.adminVagas);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -30,8 +30,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 public class SolicitarCadastro extends CommonActivity implements DatabaseReference.CompletionListener {
 
@@ -44,6 +46,8 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
     private RadioGroup tipoCadastro;
     private RadioButton aluno;
     private Usuario usuario;
+    private DatabaseReference mFirebaseDatabase;
+    public String msg = "";
 
     private Toolbar mToobar;
 
@@ -55,7 +59,7 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
         setContentView(R.layout.activity_solicitar_cadastro);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_solicitar_cadastro);
-        mToobar.setTitle("Solicitar Cadastro");
+        mToobar.setTitle(R.string.cadastar);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,12 +81,19 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
                         !editEmail.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") &&
                         !editConfirmaSenha.getText().toString().trim().equals("")){
                     if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
-                        if(isEmailValid(editEmail.getText().toString())){
-                            openProgressBar();
-                            initUser();
-                            cadastrarUsuarioFirebase();
+                        if(editSenha.getText().toString().length() >= 6){
+                            if(isEmailValid(editEmail.getText().toString())){
+
+                                openProgressBar();
+                                initUser();
+                                usuario.setId(createIdByMatricula(usuario.getMatricula()));
+                                usuario.salvarUserSolicitadoFBDatabase(SolicitarCadastro.this);
+
+                            }else{
+                                showDialogMessage("E-mail digitado não é um e-mail valido.");
+                            }
                         }else{
-                            showDialogMessage("E-mail digitado não é um e-mail valido.");
+                            showDialogMessage("Senha deve ter no minimo 6 caracteres");
                         }
                     }else {
                         showDialogMessage("Senhas não correspondem.");
@@ -119,37 +130,13 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
         }
     }
 
-    private void cadastrarUsuarioFirebase(){
-        firebaseAuth.createUserWithEmailAndPassword(
-                usuario.getEmail(),
-                usuario.getSenha()
-        ).addOnCompleteListener(SolicitarCadastro.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+    private String createIdByMatricula(String matricula){
 
-                    usuario.setId(task.getResult().getUser().getUid());
-                    usuario.salvarUserFBDatabase(SolicitarCadastro.this);
+        String[] a = matricula.split("\\.");
+        String[] b = a[3].split("-");
+        String c = a[0]+a[1]+a[2]+b[0]+b[1];
 
-                }else {
-                    String erroExcessao = "";
-                    try{
-                        throw task.getException();
-                    }catch (FirebaseAuthWeakPasswordException e){
-                        erroExcessao = "Senha fraca, digite uma mais forte";
-                    }catch (FirebaseAuthInvalidCredentialsException e){
-                        erroExcessao = "E-mail inválido";
-                    }catch (FirebaseAuthUserCollisionException e){
-                        erroExcessao = "E-mail já cadastrado";
-                    }catch (Exception e){
-                        erroExcessao = "Erro ao efetuar cadastro";
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(SolicitarCadastro.this, erroExcessao, Toast.LENGTH_LONG).show();
-                    closeProgressBar();
-                }
-            }
-        });
+        return c;
     }
 
     @Override
@@ -159,8 +146,7 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
                     !editEmail.getText().toString().trim().equals("")) {
                 AlertDialog.Builder builder;
                 builder = new AlertDialog.Builder(SolicitarCadastro.this);
-                builder.setTitle("Sair")
-                        .setMessage("Vai deseja sair?")
+                builder.setMessage("Deseja descartar as alterações?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
@@ -183,10 +169,44 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
         firebaseAuth.signOut();
-        Toast.makeText(SolicitarCadastro.this, "Usuário Cadastro com Sucesso", Toast.LENGTH_LONG).show();
+        Toast.makeText(SolicitarCadastro.this, "Solicitação enviada com sucesso", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(SolicitarCadastro.this, Login.class);
         startActivity(intent);
         closeProgressBar();
         finish();
+    }
+
+    private String validaMatriculaExiste(String matricula){
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("aprovados").child(matricula);
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("log", "log log log 1 = "+dataSnapshot);
+                if(dataSnapshot.getValue(Usuario.class) != null){
+                    msg = "Já existe um usuário aprovado com essa matricula";
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(SolicitarCadastro.this, "Erro ao acesso BD", Toast.LENGTH_LONG).show();
+            }
+        });
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitados").child(matricula);
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("log", "log log log 2 = "+dataSnapshot);
+                if(dataSnapshot.getValue(Usuario.class) != null){
+                    msg = "Já existe um usuário solicitado com essa matricula";
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(SolicitarCadastro.this, "Erro ao acesso BD", Toast.LENGTH_LONG).show();
+            }
+        });
+        return msg;
     }
 }

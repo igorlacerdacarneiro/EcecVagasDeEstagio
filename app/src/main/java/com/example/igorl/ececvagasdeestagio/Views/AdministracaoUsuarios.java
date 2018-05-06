@@ -28,7 +28,7 @@ public class AdministracaoUsuarios extends AppCompatActivity {
         setContentView(R.layout.activity_administracao_usuarios);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_admin_usuarios);
-        mToobar.setTitle("Administração de Usuários");
+        mToobar.setTitle(R.string.adminUser);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

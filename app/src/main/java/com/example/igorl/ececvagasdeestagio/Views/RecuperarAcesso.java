@@ -34,7 +34,7 @@ public class RecuperarAcesso extends CommonActivity {
         setContentView(R.layout.activity_recuperar_acesso);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_recuperar_acesso);
-        mToobar.setTitle("Recuperar Senha");
+        mToobar.setTitle(R.string.recuperar_acesso);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

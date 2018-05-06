@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="false"
+    app:cardPreventCornerOverlap="false"
+    app:cardMaxElevation="3dp"
+    app:cardCornerRadius="10dp"
+    android:layout_marginBottom="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_alignParentTop="true"
+            android:id="@+id/imagemViewDivulgacaoAllVaga"
+            android:layout_width="match_parent"
+            android:layout_height="340dp" />
+
+        <TextView
+            android:id="@+id/textViewTituloAllVaga"
+            android:layout_below="@+id/imagemViewDivulgacaoAllVaga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingTop="24dp"
+            android:textSize="28sp"/>
+
+        <TextView
+            android:id="@+id/textViewLocalAllVaga"
+            android:layout_below="@+id/textViewTituloAllVaga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/textViewEmpresaAllVaga"
+            android:layout_below="@id/textViewLocalAllVaga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textViewHorarioAllVaga"
+            android:layout_below="@id/textViewEmpresaAllVaga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingBottom="24dp"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

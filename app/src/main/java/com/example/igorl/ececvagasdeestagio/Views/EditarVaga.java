@@ -4,29 +4,23 @@ import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -35,23 +29,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.Manifest;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
-import com.example.igorl.ececvagasdeestagio.Models.*;
+import com.example.igorl.ececvagasdeestagio.Models.Vaga;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
@@ -62,7 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CadastroVaga extends CommonActivity{
+public class EditarVaga extends CommonActivity {
 
     private TextView codigo;
     private Spinner curso;
@@ -83,6 +68,7 @@ public class CadastroVaga extends CommonActivity{
     private ImageView imagem;
     private TextView data;
     private Button salvar;
+    private ImageButton editar;
     private TextView selecionarFoto;
     private TextView horario1;
     private TextView horario2;
@@ -101,10 +87,10 @@ public class CadastroVaga extends CommonActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cadastro_vaga);
+        setContentView(R.layout.activity_editar_vaga);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_vaga);
-        mToobar.setTitle(R.string.tela_cadastro_vaga);
+        mToobar.setTitle(R.string.tela_editar_vaga);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,10 +110,51 @@ public class CadastroVaga extends CommonActivity{
         ArrayAdapter adapterDia = ArrayAdapter.createFromResource(this, R.array.spinner_dia, android.R.layout.simple_spinner_dropdown_item);
         dia.setAdapter(adapterDia);
 
-        closeProgressBar();
-        /* SETAR O CODIGO DA VAGA AUTOMATICO */
-        Calendar cod = Calendar.getInstance();
-        codigo.setText(String.valueOf("v"+cod.get(Calendar.YEAR)+cod.get(Calendar.MONTH)+cod.get(Calendar.DAY_OF_MONTH)+cod.get(Calendar.HOUR_OF_DAY)+cod.get(Calendar.MINUTE)));
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+
+            String result = b.getString("vaga");
+
+            Vaga vaga = gson.fromJson(result, Vaga.class);
+
+            codigo.setText(vaga.getCodigo());
+            empresa.setText(vaga.getEmpresa());
+            local.setText(vaga.getLocal());
+            titulo.setText(vaga.getTitulo());
+            atividades.setText(vaga.getAtividades());
+            requisitos.setText(vaga.getRequisitos());
+            numero.setText(vaga.getNumero());
+            valor.setText(vaga.getBolsa());
+            informacoes.setText(vaga.getInformacoes());
+            data.setText(vaga.getData());
+            setSelectValueSpinner(curso, vaga.getCurso());
+
+            String[] aux = vaga.getHorario().split(" ");
+            String juntarStringDia = aux[0]+" "+aux[1]+" "+aux[2];
+            setSelectValueSpinner(dia, juntarStringDia);
+            horarioInicio.setText(aux[4]);
+            horarioFim.setText(aux[6]);
+
+            Picasso.get().load(vaga.getImagem()).fit().centerInside().into(imagem);
+
+            disableButton(salvar);
+            horario1.setVisibility(View.INVISIBLE);
+            horario2.setVisibility(View.INVISIBLE);
+            vagaDisponivel.setClickable(false);
+            vagaEncerrada.setClickable(false);
+            disableEditText(empresa);
+            disableEditText(local);
+            disableEditText(titulo);
+            disableEditText(atividades);
+            disableEditText(requisitos);
+            disableEditText(numero);
+            disableEditText(valor);
+            disableEditText(informacoes);
+            curso.setEnabled(false);
+            dia.setEnabled(false);
+            selecionarFoto.setVisibility(View.INVISIBLE);
+            closeProgressBar();
+        }
 
          /* AÇÃO DO BOTÃO SALVAR */
         salvar.setOnClickListener(new View.OnClickListener() {
@@ -183,6 +210,28 @@ public class CadastroVaga extends CommonActivity{
             }
         });
 
+        editar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enableButton(salvar);
+                horario1.setVisibility(View.VISIBLE);
+                horario2.setVisibility(View.VISIBLE);
+                vagaDisponivel.setClickable(true);
+                vagaEncerrada.setClickable(true);
+                enableEditText(empresa);
+                enableEditText(local);
+                enableEditText(titulo);
+                enableEditText(atividades);
+                enableEditText(requisitos);
+                enableEditText(numero);
+                enableEditText(valor);
+                enableEditText(informacoes);
+                curso.setEnabled(true);
+                dia.setEnabled(true);
+                selecionarFoto.setVisibility(View.VISIBLE);
+            }
+        });
+
         selecionarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,14 +248,13 @@ public class CadastroVaga extends CommonActivity{
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CadastroVaga.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(EditarVaga.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hora, int minuto) {
                         horarioInicio.setText(hora + ":"+ String.format("%02d",minuto));
-                        horario1.setText("ALTERAR INÍCIO");
                     }
                 }, hour, minute, true);
-                timePickerDialog.setTitle("Horário de Entrada");
+                timePickerDialog.setTitle("timePickerDialog");
                 timePickerDialog.show();
             }
         });
@@ -217,14 +265,13 @@ public class CadastroVaga extends CommonActivity{
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CadastroVaga.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(EditarVaga.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hora, int minuto) {
                         horarioFim.setText(hora + ":"+ String.format("%02d",minuto));
-                        horario2.setText("ALTERAR TÉRMINO");
                     }
                 }, hour, minute, true);
-                timePickerDialog.setTitle("Horário de Saída");
+                timePickerDialog.setTitle("timePickerDialog");
                 timePickerDialog.show();
             }
         });
@@ -253,6 +300,7 @@ public class CadastroVaga extends CommonActivity{
         imagem = (ImageView) findViewById(R.id.imagemDivulgacaoVaga);
         data = (TextView) findViewById(R.id.textViewDataVaga);
         salvar = (Button) findViewById(R.id.botaoSalvarVaga);
+        editar = (ImageButton) findViewById(R.id.imageButtonEditarVaga);
         progressBar = (ProgressBar) findViewById(R.id.progress_cadastro_vaga);
     }
 
@@ -281,20 +329,20 @@ public class CadastroVaga extends CommonActivity{
         if(mImageUri != null){
             StorageReference fileReference = mStorageReference.child("uploads/"+System.currentTimeMillis() + "."+getFileExtension(mImageUri));
             fileReference.putFile(mImageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        vaga.setImagem(taskSnapshot.getDownloadUrl().toString());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CadastroVaga.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            vaga.setImagem(taskSnapshot.getDownloadUrl().toString());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(EditarVaga.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }else{
-            Toast.makeText(CadastroVaga.this, "Não tem foto selecionada", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditarVaga.this, "Não tem foto selecionada", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -305,7 +353,7 @@ public class CadastroVaga extends CommonActivity{
     }
 
     public void voltarAposSalvarVaga(){
-        Intent intent = new Intent(CadastroVaga.this, AdministracaoVagas.class);
+        Intent intent = new Intent(EditarVaga.this, AdministracaoVagas.class);
         startActivity(intent);
         closeProgressBar();
         finish();
@@ -316,7 +364,7 @@ public class CadastroVaga extends CommonActivity{
         if(item.getItemId() == android.R.id.home){
             if(salvar.isEnabled()) {
                 AlertDialog.Builder builder;
-                builder = new AlertDialog.Builder(CadastroVaga.this);
+                builder = new AlertDialog.Builder(EditarVaga.this);
                 builder.setTitle("Sair")
                         .setMessage("Deseja sair sem salvar as alterações?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

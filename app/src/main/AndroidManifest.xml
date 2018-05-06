@@ -24,13 +24,19 @@
         <activity
             android:name=".Views.SolicitarCadastro"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Views.Principal" />
+        <activity android:name=".Views.Principal">
+            <!--<meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.igorl.ececvagasdeestagio.Views.Principal" />-->
+        </activity>
         <activity android:name=".Views.AdministracaoVagas" />
         <activity
             android:name=".Views.CadastroVaga"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Views.AdministracaoUsuarios" />
-        <activity android:name=".Views.Perfil" />
+        <activity
+            android:name=".Views.Perfil"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Fragmentos.TabUsuarios" />
         <activity android:name=".Fragmentos.TabAdmins" />
         <activity android:name=".Fragmentos.TabDisponiveis" />
@@ -43,8 +49,34 @@
         <activity
             android:name=".Views.RecuperarAcesso"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".UsuariosSolicitados" />
-        <activity android:name=".UsuariosAprovados"></activity>
+        <activity android:name=".Views.UsuariosSolicitados" />
+
+        <activity android:name=".Views.UsuariosAprovados" />
+
+        <activity android:name=".Views.VagaActivity" />
+
+        <activity
+            android:name=".Views.EditarUsuario"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity
+            android:name=".Views.EditarVaga"
+            android:windowSoftInputMode="stateHidden" />
+
+        <service
+            android:name=".DAO.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".DAO.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

@@ -3,11 +3,10 @@ package com.example.igorl.ececvagasdeestagio.Views;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,19 +17,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
-import com.example.igorl.ececvagasdeestagio.Models.Vaga;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 public class CadastroUsuario extends CommonActivity implements DatabaseReference.CompletionListener{
 
@@ -41,16 +41,12 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
     private EditText editEmail;
     private EditText editSenha;
     private EditText editConfirmaSenha;
-    private Button salvar;
-    private Button editar;
+    private Button botaoSalvar;
     private RadioGroup tipoCadastro;
     private RadioButton aluno;
     private RadioButton admin;
-    private Usuario usuario;
-    private TextView confirmaSenha;
-    private FirebaseAuth firebaseAuth;
-    private Boolean validar = false;
-
+    private TextView confSenha;
+    private Usuario mUsuario;
     private Toolbar mToobar;
 
     Gson gson = new Gson();
@@ -61,132 +57,113 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
         setContentView(R.layout.activity_cadastro_usuario);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_usuario);
-        mToobar.setTitle("Cadastro de Usuário");
+        mToobar.setTitle(R.string.tela_cadastro_usuario);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
-
         initViews();
 
-        Bundle b = getIntent().getExtras();
-        if(b != null) {
-            validar = true;
-            modoEditar();
+        closeProgressBar();
 
-            String result = b.getString("usuario");
+        SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
+        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
+        editMatricula.addTextChangedListener(maskTextWatcher);
 
-            Usuario usuario = gson.fromJson(result, Usuario.class);
-
-            if(usuario.getTipo() == 1){
-                aluno.setChecked(true);
-            }else{
-                admin.setChecked(true);
-            }
-            editNome.setText(usuario.getNome());
-            editMatricula.setText(usuario.getMatricula());
-            editEmail.setText(usuario.getEmail());
-            editSenha.setText(usuario.getSenha());
-            editConfirmaSenha.setText(usuario.getSenha());
-        }else{
-            disableButton(editar);
-
-            SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
-            MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
-            editMatricula.addTextChangedListener(maskTextWatcher);
-
-        }
-
-        editar.setOnClickListener(new View.OnClickListener() {
+        botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                enableEditText(editNome);
-                enableEditText(editMatricula);
-                enableEditText(editEmail);
-                enableEditText(editSenha);
-                disableButton(editar);
-                enableButton(salvar);
-                aluno.setClickable(true);
-                admin.setClickable(true);
-                editConfirmaSenha.setVisibility(View.VISIBLE);
-                confirmaSenha.setVisibility(View.VISIBLE);
-            }
-        });
-
-        salvar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!editNome.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") && !editConfirmaSenha.getText().toString().trim().equals("")){
+                if(!editNome.getText().toString().trim().equals("") && !editMatricula.getText().toString().trim().equals("") &&
+                        !editEmail.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") &&
+                        !editConfirmaSenha.getText().toString().trim().equals("")){
                     if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
-                        openProgressBar();
-                        initUser();
-                        if(validar){
-                            usuario.updateUserFBDatabase();
-                            firebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
-                        }else{
-                            usuario.salvarUserFBDatabase();
-                        }
+                        if(editSenha.getText().toString().length() >= 6){
+                            if(isEmailValid(editEmail.getText().toString())){
 
-                        //salvarDadosUsuario();
+                                openProgressBar();
+                                initUser();
+                                createUserFBAutentication();
+
+                            }else{
+                                showDialogMessage("E-mail digitado não é um e-mail valido.");
+                            }
+                        }else{
+                            showDialogMessage("Senha deve ter no minimo 6 caracteres");
+                        }
                     }else {
                         showDialogMessage("Senhas não correspondem.");
                     }
                 }else{
-                    showDialogMessage("Todos os campos são obrigatórios");
+                    showDialogMessage("Todos os campos são obrigatórios.");
                 }
             }
         });
     }
 
-    private void modoEditar() {
-        disableEditText(editNome);
-        disableEditText(editMatricula);
-        disableEditText(editEmail);
-        disableEditText(editSenha);
-        disableButton(salvar);
-        aluno.setClickable(false);
-        admin.setClickable(false);
-        editConfirmaSenha.setVisibility(View.INVISIBLE);
-        confirmaSenha.setVisibility(View.INVISIBLE);
-    }
-
     protected void initViews(){
-        editNome = (EditText) findViewById(R.id.textNomeCadastroUser);
-        editMatricula = (EditText) findViewById(R.id.textMatriculaCadastroUser);
-        editEmail = (EditText) findViewById(R.id.textEmailCadastroUser);
-        editSenha = (EditText) findViewById(R.id.textSenhaCadastroUser);
-        editConfirmaSenha = (EditText) findViewById(R.id.textConfirmarSenhaCadastroUser);
-        salvar = (Button) findViewById(R.id.botaoSalvarCadastroUser);
-        editar = (Button) findViewById(R.id.botaoEditarCadastroUser);
-        tipoCadastro = (RadioGroup) findViewById(R.id.radioButtonCadastroUserTipo);
-        aluno = (RadioButton) findViewById(R.id.radioUsuarioCadastroUserTipoAluno);
-        admin = (RadioButton) findViewById(R.id.radioUsuarioCadastroUserTipoAdmin);
-        progressBar = (ProgressBar) findViewById(R.id.cadastro_usuario_progress);
-        confirmaSenha = (TextView) findViewById(R.id.textView27);
+        editNome = (EditText) findViewById(R.id.textNomeUsuario);
+        editMatricula = (EditText) findViewById(R.id.textMatriculaUsuario);
+        editEmail = (EditText) findViewById(R.id.textEmailUsuario);
+        editSenha = (EditText) findViewById(R.id.textSenhaUsuario);
+        editConfirmaSenha = (EditText) findViewById(R.id.textConfirmarSenhaUsuario);
+        botaoSalvar = (Button) findViewById(R.id.botaoSalvarUsuario);
+        tipoCadastro = (RadioGroup) findViewById(R.id.radioButtonUsuariosTipo);
+        aluno = (RadioButton) findViewById(R.id.radioUsuarioTipoAluno);
+        admin = (RadioButton) findViewById(R.id.radioUsuarioTipoAdmin);
+        progressBar = (ProgressBar) findViewById(R.id.usuario_progress);
+        confSenha = (TextView) findViewById(R.id.textView27);
     }
 
     protected void initUser(){
-        usuario = new Usuario();
-        usuario.setNome(editNome.getText().toString());
-        usuario.setMatricula(editMatricula.getText().toString());
-        usuario.setEmail(editEmail.getText().toString());
-        usuario.setSenha(editSenha.getText().toString());
+        mUsuario = new Usuario();
+        mUsuario.setNome(editNome.getText().toString());
+        mUsuario.setMatricula(editMatricula.getText().toString());
+        mUsuario.setEmail(editEmail.getText().toString());
+        mUsuario.setSenha(editSenha.getText().toString());
         if(aluno.isChecked()){
-            usuario.setTipo(1);
+            mUsuario.setTipo(1);
         }else{
-            usuario.setTipo(2);
+            mUsuario.setTipo(2);
         }
+    }
+
+    private void createUserFBAutentication(){
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId("1:655248022019:android:ede0ecba58f106ad")
+                .setApiKey("AIzaSyB94IF2jwcG9IDlJELHZC2gz8KVrV4LxkI")
+                .setDatabaseUrl("https://ececvagasdeestagio.firebaseio.com/")
+                .build();
+        FirebaseApp.initializeApp(this,options,"Secundary");
+
+        FirebaseApp app = FirebaseApp.getInstance("Secundary");
+        final FirebaseAuth firebaseAuth2 = FirebaseAuth.getInstance(app);
+        firebaseAuth2.createUserWithEmailAndPassword(
+                mUsuario.getEmail(),
+                mUsuario.getSenha()
+        ).addOnCompleteListener(CadastroUsuario.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    mUsuario.setId(task.getResult().getUser().getUid());
+                    mUsuario.salvarUserAprovadosFBDatabase(CadastroUsuario.this);
+                    mUsuario.salvarUserFBDatabase(CadastroUsuario.this);
+                    firebaseAuth2.signOut();
+                }else{
+                    Toast.makeText(CadastroUsuario.this, "Erro ao criar usuário", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == android.R.id.home){
-            if(salvar.isEnabled()) {
+            if(botaoSalvar.isEnabled()) {
                 AlertDialog.Builder builder;
                 builder = new AlertDialog.Builder(CadastroUsuario.this);
                 builder.setTitle("Sair")
-                        .setMessage("Vai deseja sair?")
+                        .setMessage("Deseja sair sem salvar as alterações?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
@@ -205,16 +182,10 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
         return  super.onOptionsItemSelected(item);
     }
 
-    public void salvarDadosUsuario(){
-        Intent intent = new Intent(CadastroUsuario.this, AdministracaoUsuarios.class);
-        startActivity(intent);
-        closeProgressBar();
-        finish();
-    }
-
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-        Intent intent = new Intent(CadastroUsuario.this, AdministracaoUsuarios.class);
+        Toast.makeText(CadastroUsuario.this, "Usuário Criado com Sucesso", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(CadastroUsuario.this, UsuariosAprovados.class);
         startActivity(intent);
         closeProgressBar();
         finish();

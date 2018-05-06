@@ -1,4 +1,4 @@
-package com.example.igorl.ececvagasdeestagio;
+package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,33 +10,38 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.Adapters.UserAdapter;
-import com.example.igorl.ececvagasdeestagio.Adapters.UsuarioAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
-import com.example.igorl.ececvagasdeestagio.Views.RecuperarAcesso;
-import com.example.igorl.ececvagasdeestagio.Views.SolicitarCadastro;
+import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +54,8 @@ public class UsuariosSolicitados extends AppCompatActivity{
     private UserAdapter mUserAdapter;
     private Usuario mUsuario;
     private AlertDialog alerta;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference firebaseDatabase;
+    private FirebaseAuth mFirebaseAuth;
+    private TextView textTextoVazio;
 
     Gson gson = new Gson();
 
@@ -65,8 +70,10 @@ public class UsuariosSolicitados extends AppCompatActivity{
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        firebaseDatabase = ConfiguracaoFirebase.getFirebase();
+        mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase();
+
+        textTextoVazio = (TextView) findViewById(R.id.textViewTextoVazio) ;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewUsuariosSolicitados);
         mRecyclerView.setHasFixedSize(true);
@@ -88,6 +95,9 @@ public class UsuariosSolicitados extends AppCompatActivity{
                     Usuario usuario = snapshot.getValue(Usuario.class);
                     mlistUsuarios.add(usuario);
                 }
+                if(mlistUsuarios.isEmpty()){
+                    textTextoVazio.setVisibility(View.VISIBLE);
+                }
                 mUserAdapter.notifyDataSetChanged();
             }
 
@@ -103,31 +113,17 @@ public class UsuariosSolicitados extends AppCompatActivity{
                 mUsuario = mlistUsuarios.get(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(UsuariosSolicitados.this);
                 builder.setTitle("Confirma Solicitação?");
-                builder.setMessage("Confirmar Solicitação do Usuário: " + mUsuario.getNome() + " ?");
+                builder.setMessage("Confirmar solicitação do usuário: " + mUsuario.getNome() + " ?");
                 builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        createUserAuthentication();
-                        removeUserChildSolicitadoFromDatabase();
-                        firebaseAuth.signOut();
-                        Toast.makeText(UsuariosSolicitados.this, "Usuário aprovado com sucesso!", Toast.LENGTH_LONG).show();
-                    }
+                        createUserFBAutentication();
+                     }
                 });
 
                 builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(UsuariosSolicitados.this);
-                        builder.setTitle("Confirma Exclusão?");
-                        builder.setMessage("Confirmar Exclusão do Usuário: " + mUsuario.getNome() + " ?");
-                        builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                removeUserChildSolicitadoFromDatabase();
-                                Toast.makeText(UsuariosSolicitados.this, "Usuário removido!", Toast.LENGTH_LONG).show();
-                            }
-                        });
                     }
                 });
 
@@ -142,28 +138,40 @@ public class UsuariosSolicitados extends AppCompatActivity{
         }));
     }
 
-    private void createUserAuthentication(){
+    private void createUserFBAutentication(){
 
-        firebaseAuth.createUserWithEmailAndPassword(
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId("1:655248022019:android:ede0ecba58f106ad")
+                .setApiKey("AIzaSyB94IF2jwcG9IDlJELHZC2gz8KVrV4LxkI")
+                .setDatabaseUrl("https://ececvagasdeestagio.firebaseio.com/")
+                .build();
+        FirebaseApp.initializeApp(this,options,"Secundary");
+
+        FirebaseApp app = FirebaseApp.getInstance("Secundary");
+        final FirebaseAuth firebaseAuth2 = FirebaseAuth.getInstance(app);
+        firebaseAuth2.createUserWithEmailAndPassword(
                 mUsuario.getEmail(),
                 mUsuario.getSenha()
         ).addOnCompleteListener(UsuariosSolicitados.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-
+                    removeUserChildSolicitadoFromDatabase();
                     mUsuario.setId(task.getResult().getUser().getUid());
+                    //mUsuario.salvarUserAprovadosFBDatabase();
                     mUsuario.salvarUserFBDatabase();
-
+                    firebaseAuth2.signOut();
+                    Toast.makeText(UsuariosSolicitados.this, "Usuário Aprovado", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(UsuariosSolicitados.this, "Erro ao aprovar usuário", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
     }
 
     private void removeUserChildSolicitadoFromDatabase(){
-        firebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitados");
-        firebaseDatabase.child(mUsuario.getNome().toString()).removeValue();
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitados");
+        mFirebaseDatabase.child(mUsuario.getId()).removeValue();
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
