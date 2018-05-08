@@ -2,6 +2,7 @@ package com.example.igorl.ececvagasdeestagio.Views;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -10,8 +11,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +48,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuariosSolicitados extends AppCompatActivity{
+public class UsuariosSolicitados extends AppCompatActivity implements DatabaseReference.CompletionListener{
 
     private Toolbar mToobar;
     private RecyclerView mRecyclerView;
@@ -56,6 +59,7 @@ public class UsuariosSolicitados extends AppCompatActivity{
     private AlertDialog alerta;
     private FirebaseAuth mFirebaseAuth;
     private TextView textTextoVazio;
+    private ProgressBar progressBar;
 
     Gson gson = new Gson();
 
@@ -69,6 +73,8 @@ public class UsuariosSolicitados extends AppCompatActivity{
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progressBar = (ProgressBar) findViewById(R.id.progress_usuario_solicitantes);
 
         mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase();
@@ -117,6 +123,7 @@ public class UsuariosSolicitados extends AppCompatActivity{
                 builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility( View.VISIBLE );
                         createUserFBAutentication();
                      }
                 });
@@ -145,9 +152,16 @@ public class UsuariosSolicitados extends AppCompatActivity{
                 .setApiKey("AIzaSyB94IF2jwcG9IDlJELHZC2gz8KVrV4LxkI")
                 .setDatabaseUrl("https://ececvagasdeestagio.firebaseio.com/")
                 .build();
-        FirebaseApp.initializeApp(this,options,"Secundary");
 
-        FirebaseApp app = FirebaseApp.getInstance("Secundary");
+        FirebaseApp app;
+
+        try{
+            FirebaseApp.initializeApp(this,options,"Secundary");
+            app = FirebaseApp.getInstance("Secundary");
+        }catch (IllegalStateException e){
+            app = FirebaseApp.getInstance("Secundary");
+        }
+
         final FirebaseAuth firebaseAuth2 = FirebaseAuth.getInstance(app);
         firebaseAuth2.createUserWithEmailAndPassword(
                 mUsuario.getEmail(),
@@ -158,11 +172,11 @@ public class UsuariosSolicitados extends AppCompatActivity{
                 if(task.isSuccessful()){
                     removeUserChildSolicitadoFromDatabase();
                     mUsuario.setId(task.getResult().getUser().getUid());
-                    //mUsuario.salvarUserAprovadosFBDatabase();
-                    mUsuario.salvarUserFBDatabase();
+                    mUsuario.salvarUserFBDatabase(UsuariosSolicitados.this);
                     firebaseAuth2.signOut();
-                    Toast.makeText(UsuariosSolicitados.this, "Usuário Aprovado", Toast.LENGTH_LONG).show();
+
                 }else{
+                    progressBar.setVisibility( View.INVISIBLE );
                     Toast.makeText(UsuariosSolicitados.this, "Erro ao aprovar usuário", Toast.LENGTH_LONG).show();
                 }
             }
@@ -179,5 +193,11 @@ public class UsuariosSolicitados extends AppCompatActivity{
             finish();
         }
         return  super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+        progressBar.setVisibility( View.INVISIBLE );
+        Toast.makeText(UsuariosSolicitados.this, "Usuário Aprovado", Toast.LENGTH_LONG).show();
     }
 }

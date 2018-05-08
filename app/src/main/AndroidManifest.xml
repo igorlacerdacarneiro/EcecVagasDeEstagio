@@ -21,62 +21,99 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".Views.SolicitarCadastro"
-            android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Views.Principal">
-            <!--<meta-data
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".Views.Login">
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.igorl.ececvagasdeestagio.Views.Principal" />-->
+                android:value=".Views.Login" />
         </activity>
-        <activity android:name=".Views.AdministracaoVagas" />
+
+
+        <activity android:name=".Views.Principal"/>
+
+
+        <activity android:name=".Views.AdministracaoVagas"
+            android:parentActivityName=".Views.Principal">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Views.Principal" />
+        </activity>
+
+
         <activity
             android:name=".Views.CadastroVaga"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Views.AdministracaoUsuarios" />
+
+
+        <activity android:name=".Views.AdministracaoUsuarios"
+            android:parentActivityName=".Views.Principal">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Views.Principal" />
+        </activity>
+
+
         <activity
             android:name=".Views.Perfil"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".Views.Principal">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Views.Principal" />
+
+        </activity>
+
+
         <activity android:name=".Fragmentos.TabUsuarios" />
         <activity android:name=".Fragmentos.TabAdmins" />
         <activity android:name=".Fragmentos.TabDisponiveis" />
         <activity android:name=".Fragmentos.TabEncerradas" />
         <activity android:name=".Views.LinhaUsers" />
         <activity android:name=".Views.LinhaVagas" />
+
+
         <activity
             android:name=".Views.CadastroUsuario"
             android:windowSoftInputMode="stateHidden" />
+
+
         <activity
             android:name=".Views.RecuperarAcesso"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".Views.Login">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Views.Login" />
+        </activity>
+
+
+
         <activity android:name=".Views.UsuariosSolicitados" />
-
         <activity android:name=".Views.UsuariosAprovados" />
-
         <activity android:name=".Views.VagaActivity" />
-
         <activity
             android:name=".Views.EditarUsuario"
-            android:windowSoftInputMode="stateHidden"/>
-
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Views.EditarVaga"
             android:windowSoftInputMode="stateHidden" />
 
-        <service
-            android:name=".DAO.MyFirebaseMessagingService">
+        <service android:name=".DAO.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".DAO.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".DAO.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
-
+        <activity android:name=".Views.PrincipalAluno"></activity>
     </application>
 
 </manifest>

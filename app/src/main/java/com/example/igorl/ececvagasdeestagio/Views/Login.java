@@ -3,6 +3,7 @@ package com.example.igorl.ececvagasdeestagio.Views;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 public class Login extends CommonActivity {
 
@@ -35,6 +37,8 @@ public class Login extends CommonActivity {
     private TextView esqueciSenha;
     private DatabaseReference mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth;
+    private Usuario mUsers;
+    Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +87,26 @@ public class Login extends CommonActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    abrirTelaPrincipal();
-                    Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
+                    readData(new MyCallback() {
+                        @Override
+                        public void onCallback(Usuario usuario) {
+
+                            Log.i("log", "LOG usuario 1 === "+usuario.getId());
+                            Log.i("log", "LOG usuario 2 === "+usuario.getTipo());
+                            Log.i("log", "LOG usuario 3 === "+usuario.getNome());
+                            Log.i("log", "LOG usuario 4 === "+usuario.getEmail());
+                            Log.i("log", "LOG usuario 5 === "+usuario.getSenha());
+                            Log.i("log", "LOG usuario 6 === "+usuario.getMatricula());
+
+                            if(usuario.isUsuarioAdministrador()){
+                                Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
+                                abrirTelaPrincipalAdmin();
+                            }else{
+                                Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
+                                abrirTelaPrincipalAluno();
+                            }
+                        }
+                    });
                 }else{
                     String erroExcessao = "";
                     try{
@@ -119,8 +141,15 @@ public class Login extends CommonActivity {
         usuario.setSenha(senha.getText().toString());
     }
 
-    private void abrirTelaPrincipal(){
+    private void abrirTelaPrincipalAdmin(){
         Intent intent = new Intent(Login.this, Principal.class);
+        startActivity(intent);
+        closeProgressBar();
+        finish();
+    }
+
+    private void abrirTelaPrincipalAluno(){
+        Intent intent = new Intent(Login.this, PrincipalAluno.class);
         startActivity(intent);
         closeProgressBar();
         finish();
@@ -128,36 +157,72 @@ public class Login extends CommonActivity {
 
     private void verificarUserLogado(){
         if(mFirebaseAuth.getCurrentUser() != null){
-            Intent intent = new Intent(Login.this, Principal.class);
-            startActivity(intent);
-            finish();
+            openProgressBar();
+            readData(new MyCallback() {
+                @Override
+                public void onCallback(Usuario usuario) {
+
+                    Log.i("log", "LOG usuario 1 === "+usuario.getId());
+                    Log.i("log", "LOG usuario 2 === "+usuario.getTipo());
+                    Log.i("log", "LOG usuario 3 === "+usuario.getNome());
+                    Log.i("log", "LOG usuario 4 === "+usuario.getEmail());
+                    Log.i("log", "LOG usuario 5 === "+usuario.getSenha());
+                    Log.i("log", "LOG usuario 6 === "+usuario.getMatricula());
+
+                    if(usuario.isUsuarioAdministrador()){
+                        Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
+                        abrirTelaPrincipalAdmin();
+                    }else{
+                        Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
+                        abrirTelaPrincipalAluno();
+                    }
+                }
+            });
         }
     }
 
-    private void entryLogin(){
-        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("aprovados").child(email.getText().toString());
+    private void readData(final MyCallback myCallback){
+        mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase()
+                .child("usuarios")
+                .child("alunos")
+                .child(mFirebaseAuth.getCurrentUser().getUid());
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue(Usuario.class) != null){
-                    usuario = dataSnapshot.getValue(Usuario.class);
-                    if(usuario.getSenha().equals(senha.getText().toString())){
-                        abrirTelaPrincipal();
-                    }else{
-                        closeProgressBar();
-                        Toast.makeText(Login.this, "Senha incorreta", Toast.LENGTH_LONG).show();
-                    }
+                if(dataSnapshot.getValue() == null){
+
+                    mFirebaseDatabase = ConfiguracaoFirebase.getFirebase()
+                            .child("usuarios")
+                            .child("administradores")
+                            .child(mFirebaseAuth.getCurrentUser().getUid());
+                    mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            mUsers = dataSnapshot.getValue(Usuario.class);
+                            myCallback.onCallback(mUsers);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(Login.this, "Erro ao Recuperar Usuário", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }else{
-                    closeProgressBar();
-                    Toast.makeText(Login.this, "Matricula incorreta ou usuário não existe", Toast.LENGTH_LONG).show();
+                    mUsers = dataSnapshot.getValue(Usuario.class);
+                    myCallback.onCallback(mUsers);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(Login.this, "Erro ao acessar banco de dados", Toast.LENGTH_LONG).show();
+                Toast.makeText(Login.this, "Erro ao Recuperar Usuário", Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    public interface MyCallback {
+        void onCallback(Usuario usuario);
+    }
 }

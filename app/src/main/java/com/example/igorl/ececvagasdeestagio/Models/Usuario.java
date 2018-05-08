@@ -25,19 +25,6 @@ public class Usuario {
     public Usuario() {
     }
 
-    @Exclude
-    public Map<String, Object> toMap(){
-        HashMap<String, Object> hashMapUsuario = new HashMap<>();
-        hashMapUsuario.put("id", getId());
-        hashMapUsuario.put("tipo", getTipo());
-        hashMapUsuario.put("nome", getNome());
-        hashMapUsuario.put("matricula", getMatricula());
-        hashMapUsuario.put("email", getEmail());
-        hashMapUsuario.put("senha", getSenha());
-
-        return hashMapUsuario;
-    }
-
     public Usuario(String id, int tipo, String nome, String matricula, String email, String senha) {
         this.id = id;
         this.nome = nome;
@@ -107,6 +94,10 @@ public class Usuario {
         }
     }
 
+    private void setTipoInMap(Map<String, Object> map){
+            map.put("tipo", getTipo());
+    }
+
     public void salvarUserSolicitadoFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
         referenciaFirebase = referenciaFirebase.child("usuarios").child("solicitados");
@@ -149,7 +140,6 @@ public class Usuario {
 
     public void updateUserFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
-        //referenciaFirebase = referenciaFirebase.child("usuarios").child("aprovados");
 
         if(getTipo() == 1){
             referenciaFirebase = referenciaFirebase.child("usuarios").child("alunos").child(getId());
@@ -171,6 +161,31 @@ public class Usuario {
             referenciaFirebase.updateChildren(map, completionListener[0]);
         }
     }
+
+    public void updateUserFBDatabaseEditar(DatabaseReference.CompletionListener... completionListener){
+        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+
+        if(getTipo() == 1){
+            referenciaFirebase = referenciaFirebase.child("usuarios").child("alunos").child(getId());
+        }else{
+            referenciaFirebase = referenciaFirebase.child("usuarios").child("administradores").child(getId());
+        }
+
+        HashMap<String, Object> map = new HashMap<>();
+        setNomeInMap(map);
+        setTipoInMap(map);
+        if(map.isEmpty()){
+            return;
+        }
+
+        if( completionListener.length == 0 ){
+            referenciaFirebase.updateChildren(map);
+        }
+        else{
+            referenciaFirebase.updateChildren(map, completionListener[0]);
+        }
+    }
+
 
     public boolean isUsuarioAdministrador(){
         if(getTipo() == 2){

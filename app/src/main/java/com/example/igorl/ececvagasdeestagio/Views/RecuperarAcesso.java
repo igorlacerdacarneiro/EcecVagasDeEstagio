@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -83,29 +84,36 @@ public class RecuperarAcesso extends CommonActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == android.R.id.home){
-            if(!email.getText().toString().trim().equals("")) {
-                AlertDialog.Builder builder;
-                builder = new AlertDialog.Builder(RecuperarAcesso.this);
-                builder.setTitle("Sair")
-                        .setMessage("Vai deseja sair?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }else{
-                finish();
-            }
-        }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
-        return  super.onOptionsItemSelected(item);
+            case android.R.id.home:
+
+                if(!email.getText().toString().trim().equals("")) {
+                    AlertDialog.Builder builder;
+                    builder = new AlertDialog.Builder(RecuperarAcesso.this);
+                    builder.setTitle("Sair")
+                            .setMessage("Vai deseja sair?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    voltar();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }else{
+                    voltar();
+                }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Boolean voltar(){
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
     }
 }

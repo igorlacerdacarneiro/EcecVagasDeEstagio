@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 import com.example.igorl.ececvagasdeestagio.Adapters.VancancyAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
@@ -32,14 +32,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Principal extends AppCompatActivity {
-
+public class PrincipalAluno extends AppCompatActivity {
     private Toolbar mToobar;
     private ProgressBar mProgressBar;
     private Vaga mVaga;
@@ -60,12 +58,12 @@ public class Principal extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_principal);
+        setContentView(R.layout.activity_principal_aluno);
 
         mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase()
                 .child("usuarios")
-                .child("administradores")
+                .child("alunos")
                 .child(mFirebaseAuth.getCurrentUser().getUid());
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -82,7 +80,7 @@ public class Principal extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(Principal.this, "Erro ao Recuperar Usuário", Toast.LENGTH_LONG).show();
+                Toast.makeText(PrincipalAluno.this, "Erro ao Recuperar Usuário", Toast.LENGTH_LONG).show();
                 logoutUserApp();
             }
         });
@@ -100,7 +98,7 @@ public class Principal extends AppCompatActivity {
 
         mListVagas = new ArrayList<>();
 
-        mVagaAdapter = new VancancyAdapter(Principal.this, mListVagas);
+        mVagaAdapter = new VancancyAdapter(PrincipalAluno.this, mListVagas);
 
         mRecyclerView.setAdapter(mVagaAdapter);
 
@@ -122,7 +120,7 @@ public class Principal extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 mProgressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(Principal.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrincipalAluno.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -130,7 +128,7 @@ public class Principal extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 mVaga = mListVagas.get(position);
-                Intent intent = new Intent(Principal.this, VagaActivity.class);
+                Intent intent = new Intent(PrincipalAluno.this, VagaActivity.class);
                 intent.putExtra("vaga",gson.toJson(mVaga));
 
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -141,7 +139,7 @@ public class Principal extends AppCompatActivity {
                     View local = view.findViewById(R.id.textViewLocalAllVaga);
                     View horario = view.findViewById(R.id.textViewHorarioAllVaga);
 
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(Principal.this,
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(PrincipalAluno.this,
                             Pair.create(imagem, "element1"),
                             Pair.create(titulo, "element2"),
                             Pair.create(local, "element3"),
@@ -162,7 +160,7 @@ public class Principal extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.menu_user, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -170,27 +168,9 @@ public class Principal extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.action_adm_vagas:
-
-                Intent intent_vagas = new Intent(Principal.this, AdministracaoVagas.class);
-                startActivity(intent_vagas);
-
-                break;
-            case R.id.action_adm_users:
-
-                Intent intent_users = new Intent(Principal.this, AdministracaoUsuarios.class);
-                startActivity(intent_users);
-
-                break;
-            case R.id.action_usuarios_solicitados:
-
-                Intent intent_solicitados = new Intent(Principal.this, UsuariosSolicitados.class);
-                startActivity(intent_solicitados);
-
-                break;
             case R.id.action_perfil:
 
-                Intent intent_perfil = new Intent(Principal.this, Perfil.class);
+                Intent intent_perfil = new Intent(PrincipalAluno.this, Perfil.class);
                 intent_perfil.putExtra("usuario",gson.toJson(mUsers));
                 startActivity(intent_perfil);
 
@@ -198,7 +178,7 @@ public class Principal extends AppCompatActivity {
             case R.id.action_sair:
 
                 AlertDialog.Builder builder;
-                builder = new AlertDialog.Builder(Principal.this);
+                builder = new AlertDialog.Builder(PrincipalAluno.this);
                 builder.setTitle("Sair")
                         .setMessage("Você deseja sair?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -220,7 +200,7 @@ public class Principal extends AppCompatActivity {
 
     private void logoutUserApp(){
         mFirebaseAuth.signOut();
-        Intent intent_sair = new Intent(Principal.this, Login.class);
+        Intent intent_sair = new Intent(PrincipalAluno.this, Login.class);
         startActivity(intent_sair);
         finish();
     }

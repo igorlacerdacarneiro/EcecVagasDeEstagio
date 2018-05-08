@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.gson.Gson;
 
 public class EditarUsuario extends CommonActivity {
@@ -40,7 +42,9 @@ public class EditarUsuario extends CommonActivity {
     private TextView confSenha;
     private Usuario usuario;
     private FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mFirebaseDatabase;
     private TextView textId;
+    private Boolean mudouTipoCadastro = false;
 
     Gson gson = new Gson();
 
@@ -82,7 +86,7 @@ public class EditarUsuario extends CommonActivity {
             textId.setText(usuario.getId());
         }else{
             Toast.makeText(EditarUsuario.this, "Erro ao recuperar dados do usuário", Toast.LENGTH_LONG).show();
-            salvarDadosUsuario();
+            voltarTelaAdministracao();
         }
 
         closeProgressBar();
@@ -90,16 +94,26 @@ public class EditarUsuario extends CommonActivity {
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!editNome.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") && !editConfirmaSenha.getText().toString().trim().equals("")){
-                    if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
-                        openProgressBar();
-                        initUser();
-                        usuario.updateUserFBDatabase();
-                        //mFirebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
-                        salvarDadosUsuario();
-                    }else {
-                        showDialogMessage("Senhas não correspondem.");
+                if(!editNome.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") &&
+                        !editConfirmaSenha.getText().toString().trim().equals(""))
+                {
+                    openProgressBar();
+                    initUser();
+                    if(mudouTipoCadastro){
+                        if(usuario.getTipo() == 1 ){
+                            mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("administradores");
+                            mFirebaseDatabase.child(usuario.getId()).removeValue();
+                        }else{
+                            mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos");
+                            mFirebaseDatabase.child(usuario.getId()).removeValue();
+                        }
+                        usuario.salvarUserFBDatabase();
+                    }else{
+                        usuario.updateUserFBDatabaseEditar();
+                        Toast.makeText(EditarUsuario.this, "Usuário editado com sucesso", Toast.LENGTH_SHORT).show();
                     }
+                    Toast.makeText(EditarUsuario.this, "Usuário editado com sucesso", Toast.LENGTH_SHORT).show();
+                    voltarTelaAdministracao();
                 }else{
                     showDialogMessage("Todos os campos são obrigatórios");
                 }
@@ -113,6 +127,15 @@ public class EditarUsuario extends CommonActivity {
                 enableButton(botaoSalvar);
                 editConfirmaSenha.setVisibility(View.VISIBLE);
                 enableEditText(editNome);
+                aluno.setClickable(true);
+                admin.setClickable(true);
+            }
+        });
+
+        tipoCadastro.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                mudouTipoCadastro = true;
             }
         });
     }
@@ -186,8 +209,8 @@ public class EditarUsuario extends CommonActivity {
         return  super.onOptionsItemSelected(item);
     }
 
-    public void salvarDadosUsuario(){
-        Intent intent = new Intent(EditarUsuario.this, UsuariosAprovados.class);
+    public void voltarTelaAdministracao(){
+        Intent intent = new Intent(EditarUsuario.this, AdministracaoUsuarios.class);
         startActivity(intent);
         closeProgressBar();
         finish();

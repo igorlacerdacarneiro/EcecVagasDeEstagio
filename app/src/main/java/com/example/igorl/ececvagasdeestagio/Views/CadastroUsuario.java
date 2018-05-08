@@ -134,9 +134,16 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
                 .setApiKey("AIzaSyB94IF2jwcG9IDlJELHZC2gz8KVrV4LxkI")
                 .setDatabaseUrl("https://ececvagasdeestagio.firebaseio.com/")
                 .build();
-        FirebaseApp.initializeApp(this,options,"Secundary");
 
-        FirebaseApp app = FirebaseApp.getInstance("Secundary");
+        FirebaseApp app;
+
+        try{
+            FirebaseApp.initializeApp(this,options,"Secundary");
+            app = FirebaseApp.getInstance("Secundary");
+        }catch (IllegalStateException e){
+            app = FirebaseApp.getInstance("Secundary");
+        }
+
         final FirebaseAuth firebaseAuth2 = FirebaseAuth.getInstance(app);
         firebaseAuth2.createUserWithEmailAndPassword(
                 mUsuario.getEmail(),
@@ -146,7 +153,6 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     mUsuario.setId(task.getResult().getUser().getUid());
-                    mUsuario.salvarUserAprovadosFBDatabase(CadastroUsuario.this);
                     mUsuario.salvarUserFBDatabase(CadastroUsuario.this);
                     firebaseAuth2.signOut();
                 }else{
@@ -159,7 +165,9 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == android.R.id.home){
-            if(botaoSalvar.isEnabled()) {
+            if(!editNome.getText().toString().equals("") || !editSenha.getText().toString().equals("") ||
+                    !editMatricula.getText().toString().equals("") || !editEmail.getText().toString().equals("") ||
+                    !editConfirmaSenha.getText().toString().equals("")) {
                 AlertDialog.Builder builder;
                 builder = new AlertDialog.Builder(CadastroUsuario.this);
                 builder.setTitle("Sair")

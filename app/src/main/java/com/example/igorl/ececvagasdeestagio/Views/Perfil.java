@@ -3,6 +3,7 @@ package com.example.igorl.ececvagasdeestagio.Views;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -168,28 +169,37 @@ public class Perfil extends CommonActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == android.R.id.home){
-            if(botaoSalvar.isEnabled()) {
-                AlertDialog.Builder builder;
-                builder = new AlertDialog.Builder(Perfil.this);
-                builder.setTitle("Sair")
-                        .setMessage("Deseja sair sem salvar as alterações?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }else{
-                finish();
-            }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+
+                if(botaoSalvar.isEnabled()) {
+                    AlertDialog.Builder builder;
+                    builder = new AlertDialog.Builder(Perfil.this);
+                    builder.setTitle("Sair")
+                            .setMessage("Deseja sair sem salvar as alterações?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    voltar();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }else{
+                    voltar();
+                }
         }
-        return  super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Boolean voltar(){
+        NavUtils.navigateUpFromSameTask(this);
+        finish();
+        return true;
     }
 }

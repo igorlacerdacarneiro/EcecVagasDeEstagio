@@ -1,16 +1,20 @@
 package com.example.igorl.ececvagasdeestagio.Fragmentos;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -20,6 +24,8 @@ import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
+import com.example.igorl.ececvagasdeestagio.Views.EditarUsuario;
+import com.example.igorl.ececvagasdeestagio.Views.UsuariosAprovados;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,14 +37,8 @@ import java.util.List;
 
 public class TabUsuarios extends Fragment {
 
-    private ListView listViewUsuarioAluno; //listView
-    private ArrayAdapter<Usuario> adapterUsuarios; //adapter
-    private ArrayList<Usuario> listUsuarios; //produtos
-    private ValueEventListener valueEventListenerUsuarios;
-
     private AlertDialog alerta;
     private Usuario mUsuario;
-
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private UserAdapter mUserAdapter;
@@ -87,7 +87,10 @@ public class TabUsuarios extends Fragment {
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-
+                mUsuario = mListUsers.get(position);
+                Intent intent = new Intent(getActivity(), EditarUsuario.class);
+                intent.putExtra("usuario",gson.toJson(mUsuario));
+                startActivity(intent);
             }
 
             @Override
@@ -117,16 +120,6 @@ public class TabUsuarios extends Fragment {
         }));
 
         return view;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
 }

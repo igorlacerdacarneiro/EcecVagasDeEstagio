@@ -314,7 +314,11 @@ public class CadastroVaga extends CommonActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == android.R.id.home){
-            if(salvar.isEnabled()) {
+            if(!empresa.getText().toString().trim().equals("") || !local.getText().toString().trim().equals("") ||
+                    !titulo.getText().toString().trim().equals("") || !horarioInicio.getText().toString().trim().equals("") ||
+                    !horarioFim.getText().toString().trim().equals("") || !atividades.getText().toString().trim().equals("") ||
+                    !requisitos.getText().toString().trim().equals("") || !numero.getText().toString().trim().equals("") ||
+                    !valor.getText().toString().trim().equals("") && !informacoes.getText().toString().trim().equals("")) {
                 AlertDialog.Builder builder;
                 builder = new AlertDialog.Builder(CadastroVaga.this);
                 builder.setTitle("Sair")

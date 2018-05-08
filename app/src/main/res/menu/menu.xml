@@ -20,12 +20,6 @@
     </item>
 
     <item
-        android:id="@+id/action_usuarios_aprovados"
-        android:title="@string/usuarios_aprovados"
-        app:showAsAction="never" >
-    </item>
-
-    <item
         android:id="@+id/action_perfil"
         android:title="@string/perfil"
         app:showAsAction="never" >

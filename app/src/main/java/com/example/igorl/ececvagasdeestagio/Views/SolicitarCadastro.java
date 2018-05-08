@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -140,30 +141,37 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == android.R.id.home){
-            if(!editNome.getText().toString().trim().equals("") || !editMatricula.getText().toString().trim().equals("") ||
-                    !editEmail.getText().toString().trim().equals("")) {
-                AlertDialog.Builder builder;
-                builder = new AlertDialog.Builder(SolicitarCadastro.this);
-                builder.setMessage("Deseja descartar as alterações?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }else{
-                finish();
-            }
-        }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
-        return  super.onOptionsItemSelected(item);
+            case android.R.id.home:
+
+                if(!editNome.getText().toString().trim().equals("") || !editMatricula.getText().toString().trim().equals("") ||
+                        !editEmail.getText().toString().trim().equals("")) {
+                    AlertDialog.Builder builder;
+                    builder = new AlertDialog.Builder(SolicitarCadastro.this);
+                    builder.setMessage("Deseja descartar as alterações?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    voltar();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }else{
+                    voltar();
+                }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Boolean voltar(){
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
     }
 
     @Override

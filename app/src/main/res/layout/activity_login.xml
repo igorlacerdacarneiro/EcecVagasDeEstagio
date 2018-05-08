@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -12,32 +11,94 @@
     android:layout_margin="20px"
     tools:context="com.example.igorl.ececvagasdeestagio.Views.Login">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/login_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/imageViewLogoPuc"
-            android:layout_gravity="center"
-            android:layout_width="200dp"
-            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="150dp"
+            android:layout_height="90dp"
             app:srcCompat="@mipmap/puc_horizontal_12"/>
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_gravity="center"
+            android:layout_below="@+id/imageViewLogoPuc"
+            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="@string/app"
             android:textColor="@color/colorPrimary"
-            android:textSize="40sp"
+            android:textSize="35dp"
             android:layout_marginBottom="20dp"/>
 
-        <include
-            layout="@layout/content_login" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_below="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textSize="15sp" />
 
-    </LinearLayout>
+        <EditText
+            android:id="@+id/campoEmail"
+            android:layout_below="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_below="@+id/campoEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/senha"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/campoSenha"
+            android:layout_below="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/botaoLogin"
+            android:layout_below="@+id/campoSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/entrar"
+            android:layout_marginTop="30dp"/>
+
+        <TextView
+            android:id="@+id/textViewRecuperarSenha"
+            android:layout_below="@+id/botaoLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@android:color/black"
+            android:text="@string/esqueci_senha" />
+
+        <Button
+            android:id="@+id/botaoCadastrar"
+            android:layout_below="@+id/textViewRecuperarSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:text="@string/cadastar" />
+
+    </RelativeLayout>
 
 </ScrollView>

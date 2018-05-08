@@ -100,15 +100,9 @@ public class UsuariosAprovados extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 mUsuario = mListUsuarios.get(position);
-                Log.i("log", "LOG LOG mUsuario 1 =" + mUsuario.getId());
-                Log.i("log", "LOG LOG mUsuario 2 =" + mUsuario.getNome());
-                Log.i("log", "LOG LOG mUsuario 3 =" + mUsuario.getMatricula());
-                Log.i("log", "LOG LOG mUsuario 4 =" + mUsuario.getTipo());
-                Log.i("log", "LOG LOG mUsuario 5 =" + mUsuario.getEmail());
-                Log.i("log", "LOG LOG mUsuario 6 =" + mUsuario.getSenha());
                 Intent intent = new Intent(UsuariosAprovados.this, EditarUsuario.class);
                 intent.putExtra("usuario",gson.toJson(mUsuario));
-                startActivityForResult(intent, 2);
+                startActivity(intent);
             }
 
             @Override
