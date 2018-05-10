@@ -12,28 +12,33 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_principal"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/Theme.AppCompat.Light"/>
+
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:id="@+id/recyclerViewAllVagas"
+        android:layout_below="@+id/toolbar_principal"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_principal"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.AppCompat.Light"/>
+    <TextView
+        android:id="@+id/textViewTextoVazio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_principal"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        android:text="@string/sem_vagas" />
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:id="@+id/recyclerViewAllVagas" />
-
-    </LinearLayout>
 
 </RelativeLayout>

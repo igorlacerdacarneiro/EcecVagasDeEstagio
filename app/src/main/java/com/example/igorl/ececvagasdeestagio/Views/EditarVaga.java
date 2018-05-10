@@ -1,5 +1,6 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -11,7 +12,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -19,10 +19,10 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -37,6 +37,7 @@ import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
@@ -57,7 +58,6 @@ public class EditarVaga extends CommonActivity {
     private EditText empresa;
     private EditText local;
     private EditText titulo;
-    private Spinner dia;
     private TextView horarioInicio;
     private TextView horarioFim;
     private EditText atividades;
@@ -75,13 +75,19 @@ public class EditarVaga extends CommonActivity {
     private Vaga vaga;
     private DatabaseReference mFirebaseDatabase;
     private StorageReference mStorageReference;
-
+    private CheckBox segunda;
+    private CheckBox terca;
+    private CheckBox quarta;
+    private CheckBox quinta;
+    private CheckBox sexta;
+    private CheckBox sabado;
+    private CheckBox domingo;
+    private Boolean mudouTipoCadastro = false;
+    private FirebaseStorage mFirebaseStorage;
+    private String referenciaImagem;
     private static final int PICK_IMAGE_REQUEST = 1;
-
     private Uri mImageUri;
-
     private Toolbar mToobar;
-
     Gson gson = new Gson();
 
     @Override
@@ -89,34 +95,36 @@ public class EditarVaga extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_vaga);
 
+        dialog = new ProgressDialog(EditarVaga.this);
+
         mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_vaga);
         mToobar.setTitle(R.string.tela_editar_vaga);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        openDialog("Carregando...");
+
         mStorageReference = ConfiguracaoFirebase.getFirebaseStorage();
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase();
 
         initViews();
 
-        openProgressBar();
-
         /* SETAR O SPINNER DE CURSOS */
         ArrayAdapter adapterCursos = ArrayAdapter.createFromResource(this, R.array.spinner_cursos, android.R.layout.simple_spinner_dropdown_item);
         curso.setAdapter(adapterCursos);
-
-        /* SETAR O SPINNER DE DIA */
-        ArrayAdapter adapterDia = ArrayAdapter.createFromResource(this, R.array.spinner_dia, android.R.layout.simple_spinner_dropdown_item);
-        dia.setAdapter(adapterDia);
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
 
             String result = b.getString("vaga");
-
             Vaga vaga = gson.fromJson(result, Vaga.class);
 
+            if(vaga.getStatus() == 1){
+                vagaDisponivel.setChecked(true);
+            }else{
+                vagaEncerrada.setChecked(true);
+            }
             codigo.setText(vaga.getCodigo());
             empresa.setText(vaga.getEmpresa());
             local.setText(vaga.getLocal());
@@ -131,9 +139,11 @@ public class EditarVaga extends CommonActivity {
 
             String[] aux = vaga.getHorario().split(" ");
             String juntarStringDia = aux[0]+" "+aux[1]+" "+aux[2];
-            setSelectValueSpinner(dia, juntarStringDia);
+            selecionarDiasDaSemana(juntarStringDia);
             horarioInicio.setText(aux[4]);
             horarioFim.setText(aux[6]);
+
+            referenciaImagem = vaga.getImagem();
 
             Picasso.get().load(vaga.getImagem()).fit().centerInside().into(imagem);
 
@@ -151,9 +161,19 @@ public class EditarVaga extends CommonActivity {
             disableEditText(valor);
             disableEditText(informacoes);
             curso.setEnabled(false);
-            dia.setEnabled(false);
             selecionarFoto.setVisibility(View.INVISIBLE);
-            closeProgressBar();
+            segunda.setClickable(false);
+            terca.setClickable(false);
+            quarta.setClickable(false);
+            quinta.setClickable(false);
+            sexta.setClickable(false);
+            sabado.setClickable(false);
+            domingo.setClickable(false);
+
+            closeDialog();
+        }else{
+            Toast.makeText(EditarVaga.this, "Erro ao recuperar dados da Vaga", Toast.LENGTH_SHORT).show();
+            voltarTelaVagas();
         }
 
          /* AÇÃO DO BOTÃO SALVAR */
@@ -162,8 +182,7 @@ public class EditarVaga extends CommonActivity {
             @Override
             public void onClick(View view) {
                 if(!curso.getSelectedItem().toString().equals("Selecione um curso") && !empresa.getText().toString().trim().equals("") &&
-                        !local.getText().toString().trim().equals("") && !titulo.getText().toString().trim().equals("") &&
-                        !dia.getSelectedItem().toString().equals("Selecione uma opção") && !horarioInicio.getText().toString().trim().equals("") &&
+                        !local.getText().toString().trim().equals("") && !titulo.getText().toString().trim().equals("") && !horarioInicio.getText().toString().trim().equals("") &&
                         !horarioFim.getText().toString().trim().equals("") && !atividades.getText().toString().trim().equals("") &&
                         !requisitos.getText().toString().trim().equals("") && !numero.getText().toString().trim().equals("") &&
                         !valor.getText().toString().trim().equals("") && !informacoes.getText().toString().trim().equals(""))
@@ -175,20 +194,35 @@ public class EditarVaga extends CommonActivity {
 
                                 if (validaValorBolsaVaga(valor.getText().toString())) {
 
-                                    openProgressBar();
+                                    openDialog("Aguarde...");
 
                                     Calendar cod = Calendar.getInstance();
                                     data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH) + "/" + cod.get(Calendar.MONTH) + "/" + cod.get(Calendar.YEAR) + " às " + cod.get(Calendar.HOUR_OF_DAY) + ":" + cod.get(Calendar.MINUTE)));
 
                                     initUser();
-                                    salvarImagemFBStorage();
+
+                                    if(mudouTipoCadastro){
+
+                                        if(vaga.getStatus() == 1){
+                                            mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("vagas").child("encerradas");
+                                        }else{
+                                            mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("vagas").child("disponiveis");
+                                        }
+                                        mFirebaseDatabase.child(vaga.getCodigo()).removeValue();
+                                    }
+
+                                    if(mImageUri == null){
+                                        vaga.setImagem(referenciaImagem);
+                                    }else{
+                                        salvarImagemFBStorage();
+                                    }
 
                                     Handler handler = new Handler();
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             vaga.salvarVagaFBDatabase();
-                                            voltarAposSalvarVaga();
+                                            voltarTelaVagas();
                                         }
                                     }, 5000);
 
@@ -227,7 +261,6 @@ public class EditarVaga extends CommonActivity {
                 enableEditText(valor);
                 enableEditText(informacoes);
                 curso.setEnabled(true);
-                dia.setEnabled(true);
                 selecionarFoto.setVisibility(View.VISIBLE);
             }
         });
@@ -275,6 +308,57 @@ public class EditarVaga extends CommonActivity {
                 timePickerDialog.show();
             }
         });
+
+        vagaStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                mudouTipoCadastro = true;
+            }
+        });
+    }
+
+    private void selecionarDiasDaSemana(String dias) {
+        if(dias.equals("Seg. à Dom.")){
+            segunda.setChecked(true);
+            terca.setChecked(true);
+            quarta.setChecked(true);
+            quinta.setChecked(true);
+            sexta.setChecked(true);
+            sabado.setChecked(true);
+            domingo.setChecked(true);
+        }else if(dias.equals("Seg. à Sáb.")){
+            segunda.setChecked(true);
+            terca.setChecked(true);
+            quarta.setChecked(true);
+            quinta.setChecked(true);
+            sexta.setChecked(true);
+            sabado.setChecked(true);
+        }else if(dias.equals("Seg. à Sex.")){
+            segunda.setChecked(true);
+            terca.setChecked(true);
+            quarta.setChecked(true);
+            quinta.setChecked(true);
+            sexta.setChecked(true);
+        }else{
+            String[] aux = dias.split(" ");
+            for(int i = 0; i < aux.length; i++){
+                if(aux[i].equals("Dom.")){
+                    domingo.setChecked(true);
+                }else if(aux[i].equals("Seg.")){
+                    segunda.setChecked(true);
+                }else if(aux[i].equals("Ter.")){
+                    terca.setChecked(true);
+                }else if(aux[i].equals("Qua.")){
+                    quarta.setChecked(true);
+                }else if(aux[i].equals("Qui.")){
+                    quinta.setChecked(true);
+                }else if(aux[i].equals("Sex.")){
+                    sexta.setChecked(true);
+                }else if(aux[i].equals("Sáb.")){
+                    sabado.setChecked(true);
+                }
+            }
+        }
     }
 
     protected void initViews(){
@@ -286,7 +370,6 @@ public class EditarVaga extends CommonActivity {
         empresa = (EditText) findViewById(R.id.editVagaEmpresa);
         local = (EditText) findViewById(R.id.editVagaLocal);
         titulo = (EditText) findViewById(R.id.editVagaTitulo);
-        dia = (Spinner) findViewById(R.id.spinnerVagaDia);
         horario1 = (TextView) findViewById(R.id.textViewVagaHorario1);
         horario2 = (TextView) findViewById(R.id.textViewVagaHorario2);
         horarioInicio = (TextView) findViewById(R.id.textViewVagaHorarioInicio);
@@ -301,7 +384,13 @@ public class EditarVaga extends CommonActivity {
         data = (TextView) findViewById(R.id.textViewDataVaga);
         salvar = (Button) findViewById(R.id.botaoSalvarVaga);
         editar = (ImageButton) findViewById(R.id.imageButtonEditarVaga);
-        progressBar = (ProgressBar) findViewById(R.id.progress_cadastro_vaga);
+        segunda = (CheckBox) findViewById(R.id.checkbox_segunda);
+        terca = (CheckBox) findViewById(R.id.checkbox_terca);
+        quarta = (CheckBox) findViewById(R.id.checkbox_quarta);
+        quinta = (CheckBox) findViewById(R.id.checkbox_quinta);
+        sexta = (CheckBox) findViewById(R.id.checkbox_sexta);
+        sabado = (CheckBox) findViewById(R.id.checkbox_sabado);
+        domingo = (CheckBox) findViewById(R.id.checkbox_domingo);
     }
 
     protected void initUser(){
@@ -316,7 +405,7 @@ public class EditarVaga extends CommonActivity {
         vaga.setEmpresa(empresa.getText().toString());
         vaga.setLocal(local.getText().toString());
         vaga.setTitulo(titulo.getText().toString());
-        vaga.setHorario(dia.getSelectedItem().toString()+" de "+horarioInicio.getText().toString()+" às "+horarioFim.getText().toString());
+        vaga.setHorario(montarHorarioVaga()+" de "+horarioInicio.getText().toString()+" às "+horarioFim.getText().toString());
         vaga.setAtividades(atividades.getText().toString());
         vaga.setRequisitos(requisitos.getText().toString());
         vaga.setNumero(numero.getText().toString());
@@ -352,10 +441,10 @@ public class EditarVaga extends CommonActivity {
         return  mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    public void voltarAposSalvarVaga(){
+    public void voltarTelaVagas(){
         Intent intent = new Intent(EditarVaga.this, AdministracaoVagas.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 
@@ -432,5 +521,65 @@ public class EditarVaga extends CommonActivity {
             return false;
         }
         return true;
+    }
+
+    private String montarHorarioVaga(){
+        String seg = "", ter = "", quar = "", qui = "", sex = "", sab = "", dom = "", msg = "";
+        int cont = 0;
+
+        if(segunda.isChecked()){
+            seg = "Seg. ";
+            cont++;
+        }
+        if(terca.isChecked()){
+            ter = "Ter. ";
+            cont++;
+        }
+        if(quarta.isChecked()){
+            quar = "Qua. ";
+            cont++;
+        }
+        if(quinta.isChecked()){
+            qui = "Qui. ";
+            cont++;
+        }
+        if(sexta.isChecked()){
+            sex = "Sex. ";
+            cont++;
+        }
+        if(sabado.isChecked()){
+            sab = "Sab. ";
+            cont++;
+        }
+        if(domingo.isChecked()){
+            dom = "Dom. ";
+            cont++;
+        }
+
+        if(cont == 7){
+            msg = "Seg. à Dom.";
+        }else{
+
+            if(cont == 6 && (!seg.equals("") && !ter.equals("") &&!quar.equals("") && !qui.equals("") && !sex.equals("") && !sab.equals(""))){
+                msg = "Seg. à Sáb.";
+            }else if(cont == 5 && (!seg.equals("") && !ter.equals("") &&!quar.equals("") && !qui.equals("") && !sex.equals(""))){
+                msg = "Seg. à Sex.";
+            }else{
+                if(!seg.isEmpty())
+                    msg = msg + seg;
+                if(!ter.isEmpty())
+                    msg = msg+ ter;
+                if(!quar.isEmpty())
+                    msg = msg + quar;
+                if(!qui.isEmpty())
+                    msg = msg + qui;
+                if(!sex.isEmpty())
+                    msg = msg + sex;
+                if(!sab.isEmpty())
+                    msg = msg + sab;
+            }
+        }
+
+        return msg;
     }
 }

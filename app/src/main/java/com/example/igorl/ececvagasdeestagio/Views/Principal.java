@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -49,6 +50,7 @@ public class Principal extends AppCompatActivity {
     private DatabaseReference mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth;
     private List<Vaga> mListVagas;
+    private TextView textTextoVazio;
 
     Gson gson = new Gson();
 
@@ -92,6 +94,8 @@ public class Principal extends AppCompatActivity {
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
 
+        textTextoVazio = (TextView) findViewById(R.id.textViewTextoVazio) ;
+
         mProgressBar = (ProgressBar) findViewById(R.id.progress_principal_load);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewAllVagas);
@@ -115,6 +119,11 @@ public class Principal extends AppCompatActivity {
                     Vaga vaga = snapshot.getValue(Vaga.class);
                     mListVagas.add(vaga);
                 }
+
+                if(mListVagas.isEmpty()){
+                    textTextoVazio.setVisibility(View.VISIBLE);
+                }
+
                 mVagaAdapter.notifyDataSetChanged();
                 mProgressBar.setVisibility(View.INVISIBLE);
             }

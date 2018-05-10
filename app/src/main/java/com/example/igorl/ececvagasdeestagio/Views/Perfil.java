@@ -1,29 +1,28 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.gson.Gson;
 
 public class Perfil extends CommonActivity {
@@ -51,47 +50,61 @@ public class Perfil extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
+        dialog = new ProgressDialog(Perfil.this);
+
         mToobar = (Toolbar) findViewById(R.id.toolbar_perfil);
         mToobar.setTitle(R.string.perfil);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        openDialog("Carregando...");
+
         mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
         initViews();
 
-        openProgressBar();
-
         Bundle b = getIntent().getExtras();
         if(b != null) {
-            String result = b.getString("usuario");
-            Usuario usuario = gson.fromJson(result, Usuario.class);
+            try {
+                String result = b.getString("usuario");
+                Usuario usuario = gson.fromJson(result, Usuario.class);
 
-            if(usuario.getTipo() == 1){
-                aluno.setChecked(true);
-            }else{
-                admin.setChecked(true);
+                if(usuario.getTipo() == 1){
+                    aluno.setChecked(true);
+                }else{
+                    admin.setChecked(true);
+                }
+                editNome.setText(usuario.getNome());
+                editMatricula.setText(usuario.getMatricula());
+                editEmail.setText(usuario.getEmail());
+                editSenha.setText(AESCrypt.decrypt(usuario.getSenha()));
+                editConfirmaSenha.setText(AESCrypt.decrypt(usuario.getSenha()));
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            editNome.setText(usuario.getNome());
-            editMatricula.setText(usuario.getMatricula());
-            editEmail.setText(usuario.getEmail());
-            editSenha.setText(usuario.getSenha());
-            editConfirmaSenha.setText(usuario.getSenha());
+            closeDialog();
+        }else{
+            Toast.makeText(Perfil.this, "Erro ao recuperar dados do Usuário", Toast.LENGTH_SHORT).show();
+            voltarTelaPrincipal();
         }
-
-        closeProgressBar();
 
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!editNome.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") && !editConfirmaSenha.getText().toString().trim().equals("")){
                     if(editSenha.getText().toString().equals(editConfirmaSenha.getText().toString())){
-                        openProgressBar();
+                        openDialog("Aguarde...");
                         initUser();
-                        usuario.updateUserFBDatabase();
-                        mFirebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
-                        salvarDadosUsuario();
+                        try {
+                            mFirebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
+                            usuario.setSenha(AESCrypt.encrypt(usuario.getSenha()));
+                            usuario.updateUserFBDatabase();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        voltarTelaPrincipal();
                     }else {
                         showDialogMessage("Senhas não correspondem.");
                     }
@@ -143,7 +156,6 @@ public class Perfil extends CommonActivity {
         aluno = (RadioButton) findViewById(R.id.radioUsuarioTipoAluno);
         admin = (RadioButton) findViewById(R.id.radioUsuarioTipoAdmin);
         tipo = (TextView) findViewById(R.id.textViewTipoUsuario);
-        progressBar = (ProgressBar) findViewById(R.id.usuario_progress);
         confSenha = (TextView) findViewById(R.id.textView27);
     }
 
@@ -161,45 +173,36 @@ public class Perfil extends CommonActivity {
         }
     }
 
-    public void salvarDadosUsuario(){
+    public void voltarTelaPrincipal(){
         Intent intent = new Intent(Perfil.this, Principal.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-
-                if(botaoSalvar.isEnabled()) {
-                    AlertDialog.Builder builder;
-                    builder = new AlertDialog.Builder(Perfil.this);
-                    builder.setTitle("Sair")
-                            .setMessage("Deseja sair sem salvar as alterações?")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    voltar();
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                }else{
-                    voltar();
-                }
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == android.R.id.home){
+            if(botaoSalvar.isEnabled()) {
+                AlertDialog.Builder builder;
+                builder = new AlertDialog.Builder(Perfil.this);
+                builder.setTitle("Sair")
+                        .setMessage("Deseja sair sem salvar as alterações?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }else{
+                finish();
+            }
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private Boolean voltar(){
-        NavUtils.navigateUpFromSameTask(this);
-        finish();
-        return true;
+        return  super.onOptionsItemSelected(item);
     }
 }

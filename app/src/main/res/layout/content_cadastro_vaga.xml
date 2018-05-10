@@ -113,61 +113,58 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/dia" />
-        <Spinner
-            android:id="@+id/spinnerVagaDia"
+
+        <!--<com.example.igorl.ececvagasdeestagio.Utils.WeekdaysWidget
+            android:id="@+id/widget1"
             android:layout_below="@+id/textView14"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:editable="true"/>-->
 
         <LinearLayout
-            android:id="@+id/linear_dias_semana"
-            android:layout_below="@+id/spinnerVagaDia"
+            android:id="@+id/linear_check_dias"
+            android:layout_below="@+id/textView14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <CheckBox
-                android:id="@+id/check_domingo"
+                android:id="@+id/checkbox_domingo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/domingo"
                 android:layout_weight="1"/>
             <CheckBox
-                android:id="@+id/check_segunda"
+                android:id="@+id/checkbox_segunda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/segunda_sexta_sabado"
-                android:checked="true"
                 android:layout_weight="1"/>
             <CheckBox
-                android:id="@+id/check_terca"
+                android:id="@+id/checkbox_terca"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/terca"
-                android:checked="true"
                 android:layout_weight="1"/>
             <CheckBox
-                android:id="@+id/check_quarta"
+                android:id="@+id/checkbox_quarta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/quarta_quinta"
-                android:checked="true"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
             <CheckBox
-                android:id="@+id/check_quinta"
+                android:id="@+id/checkbox_quinta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/quarta_quinta"
-                android:layout_weight="1"
-                android:checked="true"/>
+                android:layout_weight="1" />
             <CheckBox
-                android:id="@+id/check_sexta"
+                android:id="@+id/checkbox_sexta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/segunda_sexta_sabado"
-                android:checked="true"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
             <CheckBox
-                android:id="@+id/check_sabado"
+                android:id="@+id/checkbox_sabado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/segunda_sexta_sabado"
@@ -177,7 +174,7 @@
         <!-- HORARIO VAGA -->
         <TextView
             android:id="@+id/textView38"
-            android:layout_below="@+id/linear_dias_semana"
+            android:layout_below="@+id/linear_check_dias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/horario" />
@@ -323,13 +320,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/salvar" />
-
-        <ProgressBar
-            android:layout_centerHorizontal="true"
-            android:id="@+id/progress_cadastro_vaga"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
 
     </RelativeLayout>
 

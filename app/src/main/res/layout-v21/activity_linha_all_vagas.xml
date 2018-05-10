@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingTop="24dp"
-            android:textSize="28sp"/>
+            android:textSize="24sp"/>
 
         <TextView
             android:id="@+id/textViewLocalAllVaga"

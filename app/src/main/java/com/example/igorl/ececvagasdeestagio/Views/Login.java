@@ -1,5 +1,6 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +45,8 @@ public class Login extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        dialog = new ProgressDialog(Login.this);
+
         mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
         initViews();
@@ -55,7 +57,7 @@ public class Login extends CommonActivity {
             @Override
             public void  onClick(View v){
                 if(!email.getText().toString().equals("") && !senha.getText().toString().equals("")){
-                    openProgressBar();
+                    openDialog("Aguarde...");
                     initUser();
                     login();
                 }else{
@@ -83,7 +85,10 @@ public class Login extends CommonActivity {
 
     private void login(){
 
-        mFirebaseAuth.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mFirebaseAuth.signInWithEmailAndPassword(
+                usuario.getEmail(),
+                usuario.getSenha()
+        ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
@@ -120,7 +125,7 @@ public class Login extends CommonActivity {
                         e.printStackTrace();
                     }
                     Toast.makeText(Login.this, erroExcessao, Toast.LENGTH_SHORT).show();
-                    closeProgressBar();
+                    closeDialog();
                 }
             }
         });
@@ -131,7 +136,6 @@ public class Login extends CommonActivity {
         senha = (EditText) findViewById(R.id.campoSenha);
         botaoEntrar = (Button) findViewById(R.id.botaoLogin);
         botaoCadastrar = (Button) findViewById(R.id.botaoCadastrar);
-        progressBar = (ProgressBar) findViewById(R.id.login_progress);
         esqueciSenha = (TextView) findViewById(R.id.textViewRecuperarSenha);
     }
 
@@ -144,20 +148,20 @@ public class Login extends CommonActivity {
     private void abrirTelaPrincipalAdmin(){
         Intent intent = new Intent(Login.this, Principal.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 
     private void abrirTelaPrincipalAluno(){
         Intent intent = new Intent(Login.this, PrincipalAluno.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 
     private void verificarUserLogado(){
         if(mFirebaseAuth.getCurrentUser() != null){
-            openProgressBar();
+            openDialog("Aguarde...");
             readData(new MyCallback() {
                 @Override
                 public void onCallback(Usuario usuario) {

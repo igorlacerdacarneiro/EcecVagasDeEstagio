@@ -1,61 +1,44 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.Manifest;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.*;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,7 +55,6 @@ public class CadastroVaga extends CommonActivity{
     private EditText empresa;
     private EditText local;
     private EditText titulo;
-    private Spinner dia;
     private TextView horarioInicio;
     private TextView horarioFim;
     private EditText atividades;
@@ -89,13 +71,16 @@ public class CadastroVaga extends CommonActivity{
     private Vaga vaga;
     private DatabaseReference mFirebaseDatabase;
     private StorageReference mStorageReference;
-
+    private CheckBox segunda;
+    private CheckBox terca;
+    private CheckBox quarta;
+    private CheckBox quinta;
+    private CheckBox sexta;
+    private CheckBox sabado;
+    private CheckBox domingo;
     private static final int PICK_IMAGE_REQUEST = 1;
-
     private Uri mImageUri;
-
     private Toolbar mToobar;
-
     Gson gson = new Gson();
 
     @Override
@@ -103,43 +88,48 @@ public class CadastroVaga extends CommonActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_vaga);
 
+        dialog = new ProgressDialog(CadastroVaga.this);
+
         mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_vaga);
         mToobar.setTitle(R.string.tela_cadastro_vaga);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        openDialog("Carregando...");
+
         mStorageReference = ConfiguracaoFirebase.getFirebaseStorage();
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase();
 
         initViews();
 
-        openProgressBar();
+        segunda.setChecked(true);
+        terca.setChecked(true);
+        quarta.setChecked(true);
+        quinta.setChecked(true);
+        sexta.setChecked(true);
 
         /* SETAR O SPINNER DE CURSOS */
         ArrayAdapter adapterCursos = ArrayAdapter.createFromResource(this, R.array.spinner_cursos, android.R.layout.simple_spinner_dropdown_item);
         curso.setAdapter(adapterCursos);
 
-        /* SETAR O SPINNER DE DIA */
-        ArrayAdapter adapterDia = ArrayAdapter.createFromResource(this, R.array.spinner_dia, android.R.layout.simple_spinner_dropdown_item);
-        dia.setAdapter(adapterDia);
-
-        closeProgressBar();
         /* SETAR O CODIGO DA VAGA AUTOMATICO */
         Calendar cod = Calendar.getInstance();
         codigo.setText(String.valueOf("v"+cod.get(Calendar.YEAR)+cod.get(Calendar.MONTH)+cod.get(Calendar.DAY_OF_MONTH)+cod.get(Calendar.HOUR_OF_DAY)+cod.get(Calendar.MINUTE)));
+
+        closeDialog();
 
          /* AÇÃO DO BOTÃO SALVAR */
         salvar.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
+
                 if(!curso.getSelectedItem().toString().equals("Selecione um curso") && !empresa.getText().toString().trim().equals("") &&
                         !local.getText().toString().trim().equals("") && !titulo.getText().toString().trim().equals("") &&
-                        !dia.getSelectedItem().toString().equals("Selecione uma opção") && !horarioInicio.getText().toString().trim().equals("") &&
-                        !horarioFim.getText().toString().trim().equals("") && !atividades.getText().toString().trim().equals("") &&
-                        !requisitos.getText().toString().trim().equals("") && !numero.getText().toString().trim().equals("") &&
-                        !valor.getText().toString().trim().equals("") && !informacoes.getText().toString().trim().equals(""))
+                        !horarioInicio.getText().toString().trim().equals("") && !horarioFim.getText().toString().trim().equals("") &&
+                        !atividades.getText().toString().trim().equals("") && !requisitos.getText().toString().trim().equals("") &&
+                        !numero.getText().toString().trim().equals("") && !valor.getText().toString().trim().equals("") && !informacoes.getText().toString().trim().equals(""))
                 {
                     try {
                         if(validaValorHoariosVaga(horarioInicio.getText().toString(), horarioFim.getText().toString())) {
@@ -148,12 +138,13 @@ public class CadastroVaga extends CommonActivity{
 
                                 if (validaValorBolsaVaga(valor.getText().toString())) {
 
-                                    openProgressBar();
+                                    openDialog("Aguarde...");
 
                                     Calendar cod = Calendar.getInstance();
                                     data.setText(String.valueOf(cod.get(Calendar.DAY_OF_MONTH) + "/" + cod.get(Calendar.MONTH) + "/" + cod.get(Calendar.YEAR) + " às " + cod.get(Calendar.HOUR_OF_DAY) + ":" + cod.get(Calendar.MINUTE)));
 
                                     initUser();
+
                                     salvarImagemFBStorage();
 
                                     Handler handler = new Handler();
@@ -161,7 +152,7 @@ public class CadastroVaga extends CommonActivity{
                                         @Override
                                         public void run() {
                                             vaga.salvarVagaFBDatabase();
-                                            voltarAposSalvarVaga();
+                                            voltarTelaAdministracaoVagas();
                                         }
                                     }, 5000);
 
@@ -239,7 +230,6 @@ public class CadastroVaga extends CommonActivity{
         empresa = (EditText) findViewById(R.id.editVagaEmpresa);
         local = (EditText) findViewById(R.id.editVagaLocal);
         titulo = (EditText) findViewById(R.id.editVagaTitulo);
-        dia = (Spinner) findViewById(R.id.spinnerVagaDia);
         horario1 = (TextView) findViewById(R.id.textViewVagaHorario1);
         horario2 = (TextView) findViewById(R.id.textViewVagaHorario2);
         horarioInicio = (TextView) findViewById(R.id.textViewVagaHorarioInicio);
@@ -253,7 +243,13 @@ public class CadastroVaga extends CommonActivity{
         imagem = (ImageView) findViewById(R.id.imagemDivulgacaoVaga);
         data = (TextView) findViewById(R.id.textViewDataVaga);
         salvar = (Button) findViewById(R.id.botaoSalvarVaga);
-        progressBar = (ProgressBar) findViewById(R.id.progress_cadastro_vaga);
+        segunda = (CheckBox) findViewById(R.id.checkbox_segunda);
+        terca = (CheckBox) findViewById(R.id.checkbox_terca);
+        quarta = (CheckBox) findViewById(R.id.checkbox_quarta);
+        quinta = (CheckBox) findViewById(R.id.checkbox_quinta);
+        sexta = (CheckBox) findViewById(R.id.checkbox_sexta);
+        sabado = (CheckBox) findViewById(R.id.checkbox_sabado);
+        domingo = (CheckBox) findViewById(R.id.checkbox_domingo);
     }
 
     protected void initUser(){
@@ -268,13 +264,75 @@ public class CadastroVaga extends CommonActivity{
         vaga.setEmpresa(empresa.getText().toString());
         vaga.setLocal(local.getText().toString());
         vaga.setTitulo(titulo.getText().toString());
-        vaga.setHorario(dia.getSelectedItem().toString()+" de "+horarioInicio.getText().toString()+" às "+horarioFim.getText().toString());
+
+        vaga.setHorario(montarHorarioVaga()+" de "+horarioInicio.getText().toString()+" às "+horarioFim.getText().toString());
+
         vaga.setAtividades(atividades.getText().toString());
         vaga.setRequisitos(requisitos.getText().toString());
         vaga.setNumero(numero.getText().toString());
         vaga.setBolsa(valor.getText().toString());
         vaga.setInformacoes(informacoes.getText().toString());
         vaga.setData(data.getText().toString());
+    }
+
+    private String montarHorarioVaga(){
+        String seg = "", ter = "", quar = "", qui = "", sex = "", sab = "", dom = "", msg = "";
+        int cont = 0;
+
+        if(segunda.isChecked()){
+            seg = "Seg. ";
+            cont++;
+        }
+        if(terca.isChecked()){
+            ter = "Ter. ";
+            cont++;
+        }
+        if(quarta.isChecked()){
+            quar = "Qua. ";
+            cont++;
+        }
+        if(quinta.isChecked()){
+            qui = "Qui. ";
+            cont++;
+        }
+        if(sexta.isChecked()){
+            sex = "Sex. ";
+            cont++;
+        }
+        if(sabado.isChecked()){
+            sab = "Sab. ";
+            cont++;
+        }
+        if(domingo.isChecked()){
+            dom = "Dom. ";
+            cont++;
+        }
+
+        if(cont == 7){
+            msg = "Seg. à Dom.";
+        }else{
+
+            if(cont == 6 && (!seg.equals("") && !ter.equals("") &&!quar.equals("") && !qui.equals("") && !sex.equals("") && !sab.equals(""))){
+                msg = "Seg. à Sáb.";
+            }else if(cont == 5 && (!seg.equals("") && !ter.equals("") &&!quar.equals("") && !qui.equals("") && !sex.equals(""))){
+                msg = "Seg. à Sex.";
+            }else{
+                if(!seg.isEmpty())
+                    msg = msg + seg;
+                if(!ter.isEmpty())
+                    msg = msg+ ter;
+                if(!quar.isEmpty())
+                    msg = msg + quar;
+                if(!qui.isEmpty())
+                    msg = msg + qui;
+                if(!sex.isEmpty())
+                    msg = msg + sex;
+                if(!sab.isEmpty())
+                    msg = msg + sab;
+            }
+        }
+
+        return msg;
     }
 
     private void salvarImagemFBStorage(){
@@ -304,10 +362,10 @@ public class CadastroVaga extends CommonActivity{
         return  mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    public void voltarAposSalvarVaga(){
+    public void voltarTelaAdministracaoVagas(){
         Intent intent = new Intent(CadastroVaga.this, AdministracaoVagas.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 
@@ -389,4 +447,5 @@ public class CadastroVaga extends CommonActivity{
         }
         return true;
     }
+
 }

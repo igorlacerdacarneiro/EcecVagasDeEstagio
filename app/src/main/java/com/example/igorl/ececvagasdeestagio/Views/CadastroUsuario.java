@@ -1,5 +1,6 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -19,9 +19,8 @@ import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
-import com.github.rtoshiro.util.format.SimpleMaskFormatter;
-import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -30,11 +29,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.gson.Gson;
 
 public class CadastroUsuario extends CommonActivity implements DatabaseReference.CompletionListener{
-
-    public static final String FORMAT_MATRICULA = "####.#.########-##";
 
     private EditText editNome;
     private EditText editMatricula;
@@ -49,12 +45,12 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
     private Usuario mUsuario;
     private Toolbar mToobar;
 
-    Gson gson = new Gson();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_usuario);
+
+        dialog = new ProgressDialog(CadastroUsuario.this);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_cadastro_usuario);
         mToobar.setTitle(R.string.tela_cadastro_usuario);
@@ -63,12 +59,6 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initViews();
-
-        closeProgressBar();
-
-        SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
-        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
-        editMatricula.addTextChangedListener(maskTextWatcher);
 
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +70,7 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
                         if(editSenha.getText().toString().length() >= 6){
                             if(isEmailValid(editEmail.getText().toString())){
 
-                                openProgressBar();
+                                openDialog("Aguarde...");
                                 initUser();
                                 createUserFBAutentication();
 
@@ -110,7 +100,6 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
         tipoCadastro = (RadioGroup) findViewById(R.id.radioButtonUsuariosTipo);
         aluno = (RadioButton) findViewById(R.id.radioUsuarioTipoAluno);
         admin = (RadioButton) findViewById(R.id.radioUsuarioTipoAdmin);
-        progressBar = (ProgressBar) findViewById(R.id.usuario_progress);
         confSenha = (TextView) findViewById(R.id.textView27);
     }
 
@@ -152,9 +141,15 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    mUsuario.setId(task.getResult().getUser().getUid());
-                    mUsuario.salvarUserFBDatabase(CadastroUsuario.this);
-                    firebaseAuth2.signOut();
+                    try {
+                        mUsuario.setId(task.getResult().getUser().getUid());
+                        mUsuario.setSenha(AESCrypt.encrypt(mUsuario.getSenha()));
+                        mUsuario.salvarUserFBDatabase(CadastroUsuario.this);
+                        firebaseAuth2.signOut();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(CadastroUsuario.this, "Usuário Criado com Sucesso", Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(CadastroUsuario.this, "Erro ao criar usuário", Toast.LENGTH_LONG).show();
                 }
@@ -192,10 +187,9 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
 
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-        Toast.makeText(CadastroUsuario.this, "Usuário Criado com Sucesso", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(CadastroUsuario.this, UsuariosAprovados.class);
+        Intent intent = new Intent(CadastroUsuario.this, AdministracaoUsuarios.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 }

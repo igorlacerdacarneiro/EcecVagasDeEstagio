@@ -1,18 +1,17 @@
 package com.example.igorl.ececvagasdeestagio.Views;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -45,7 +44,6 @@ public class EditarUsuario extends CommonActivity {
     private DatabaseReference mFirebaseDatabase;
     private TextView textId;
     private Boolean mudouTipoCadastro = false;
-
     Gson gson = new Gson();
 
     @Override
@@ -53,24 +51,25 @@ public class EditarUsuario extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_usuario);
 
+        dialog = new ProgressDialog(EditarUsuario.this);
+
         mToobar = (Toolbar) findViewById(R.id.toolbar_editar_usuario);
         mToobar.setTitle(R.string.tela_editar_usuario);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        openDialog("Carregando...");
+
         mFirebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
         initViews();
-
-        openProgressBar();
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
             modoEditar();
 
             String result = b.getString("usuario");
-
             Usuario usuario = gson.fromJson(result, Usuario.class);
 
             if(usuario.getTipo() == 1){
@@ -84,12 +83,11 @@ public class EditarUsuario extends CommonActivity {
             editSenha.setText(usuario.getSenha());
             editConfirmaSenha.setText(usuario.getSenha());
             textId.setText(usuario.getId());
+            closeDialog();
         }else{
             Toast.makeText(EditarUsuario.this, "Erro ao recuperar dados do usuário", Toast.LENGTH_LONG).show();
             voltarTelaAdministracao();
         }
-
-        closeProgressBar();
 
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +95,7 @@ public class EditarUsuario extends CommonActivity {
                 if(!editNome.getText().toString().trim().equals("") && !editSenha.getText().toString().trim().equals("") &&
                         !editConfirmaSenha.getText().toString().trim().equals(""))
                 {
-                    openProgressBar();
+                    openDialog("Aguarde...");
                     initUser();
                     if(mudouTipoCadastro){
                         if(usuario.getTipo() == 1 ){
@@ -110,7 +108,6 @@ public class EditarUsuario extends CommonActivity {
                         usuario.salvarUserFBDatabase();
                     }else{
                         usuario.updateUserFBDatabaseEditar();
-                        Toast.makeText(EditarUsuario.this, "Usuário editado com sucesso", Toast.LENGTH_SHORT).show();
                     }
                     Toast.makeText(EditarUsuario.this, "Usuário editado com sucesso", Toast.LENGTH_SHORT).show();
                     voltarTelaAdministracao();
@@ -164,7 +161,6 @@ public class EditarUsuario extends CommonActivity {
         tipoCadastro = (RadioGroup) findViewById(R.id.radioButtonUsuariosTipo);
         aluno = (RadioButton) findViewById(R.id.radioUsuarioTipoAluno);
         admin = (RadioButton) findViewById(R.id.radioUsuarioTipoAdmin);
-        progressBar = (ProgressBar) findViewById(R.id.usuario_progress);
         confSenha = (TextView) findViewById(R.id.textView27);
         textId = (TextView) findViewById(R.id.textViewIdUsuario);
     }
@@ -212,7 +208,7 @@ public class EditarUsuario extends CommonActivity {
     public void voltarTelaAdministracao(){
         Intent intent = new Intent(EditarUsuario.this, AdministracaoUsuarios.class);
         startActivity(intent);
-        closeProgressBar();
+        closeDialog();
         finish();
     }
 

@@ -28,7 +28,7 @@
     <string name="encerrada">Encerrada</string>
 
     <string name="vagas">Vagas</string>
-    <string name="app_name">Vagas de Estágio</string>
+    <string name="app_name">ECEC Estágio</string>
     <string name="aluno">Aluno</string>
 
     <!-- Text View -->
@@ -79,16 +79,12 @@
         <item>Matemática</item>
         <item>Química</item>
     </string-array>
-    <string-array name="spinner_dia">
-        <item>Selecione uma opção</item>
-        <item>Seg. à Sex.</item>
-        <item>Seg. à Sáb.</item>
-    </string-array>
 
     <string name="sem_usu_rios">Sem usuários</string>
     <string name="segunda_sexta_sabado">S</string>
     <string name="quarta_quinta">Q</string>
     <string name="terca">T</string>
     <string name="domingo">D</string>
+    <string name="sem_vagas">Sem vagas disponíveis</string>
 
 </resources>

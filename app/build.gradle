@@ -37,6 +37,9 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile('com.github.afollestad:TextDrawable:c32bc48d86') {
+        transitive = true
+    }
 }
 
 

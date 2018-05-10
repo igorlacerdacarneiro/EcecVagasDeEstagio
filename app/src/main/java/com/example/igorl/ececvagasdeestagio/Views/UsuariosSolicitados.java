@@ -22,6 +22,7 @@ import com.example.igorl.ececvagasdeestagio.Adapters.UserAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -162,6 +163,12 @@ public class UsuariosSolicitados extends AppCompatActivity implements DatabaseRe
             app = FirebaseApp.getInstance("Secundary");
         }
 
+        try {
+            mUsuario.setSenha(AESCrypt.decrypt(mUsuario.getSenha()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         final FirebaseAuth firebaseAuth2 = FirebaseAuth.getInstance(app);
         firebaseAuth2.createUserWithEmailAndPassword(
                 mUsuario.getEmail(),
@@ -172,6 +179,11 @@ public class UsuariosSolicitados extends AppCompatActivity implements DatabaseRe
                 if(task.isSuccessful()){
                     removeUserChildSolicitadoFromDatabase();
                     mUsuario.setId(task.getResult().getUser().getUid());
+                    try {
+                        mUsuario.setSenha(AESCrypt.encrypt(mUsuario.getSenha()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     mUsuario.salvarUserFBDatabase(UsuariosSolicitados.this);
                     firebaseAuth2.signOut();
 

@@ -1,6 +1,9 @@
 package com.example.igorl.ececvagasdeestagio.Utils;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +23,7 @@ import java.util.regex.Pattern;
 public abstract class CommonActivity extends AppCompatActivity {
 
     protected ProgressBar progressBar;
+    protected ProgressDialog dialog;
 
     protected void openProgressBar(){
         progressBar.setVisibility( View.VISIBLE );
@@ -76,5 +80,17 @@ public abstract class CommonActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    protected void openDialog(String msg){
+        dialog.setMessage(msg);
+        dialog.setIndeterminate(false);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+
+    protected void closeDialog(){
+        dialog.dismiss();
     }
 }

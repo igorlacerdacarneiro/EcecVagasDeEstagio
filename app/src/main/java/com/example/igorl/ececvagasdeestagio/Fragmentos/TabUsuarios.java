@@ -3,6 +3,7 @@ package com.example.igorl.ececvagasdeestagio.Fragmentos;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +26,13 @@ import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.example.igorl.ececvagasdeestagio.Views.EditarUsuario;
-import com.example.igorl.ececvagasdeestagio.Views.UsuariosAprovados;
+import com.example.igorl.ececvagasdeestagio.Views.UsuariosSolicitados;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -102,6 +109,7 @@ public class TabUsuarios extends Fragment {
                 builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        removeUserToAutentication(mUsuario);
                         mFirebaseDatabase.child(mUsuario.getId().toString()).removeValue();
                         Toast.makeText(getActivity(), "Exclusão efetuada", Toast.LENGTH_LONG).show();
                     }
@@ -110,7 +118,6 @@ public class TabUsuarios extends Fragment {
                 builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getActivity(), "Exclusão cancelada", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -120,6 +127,39 @@ public class TabUsuarios extends Fragment {
         }));
 
         return view;
+    }
+
+    private void removeUserToAutentication(Usuario user){
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId("1:655248022019:android:ede0ecba58f106ad")
+                .setApiKey("AIzaSyB94IF2jwcG9IDlJELHZC2gz8KVrV4LxkI")
+                .setDatabaseUrl("https://ececvagasdeestagio.firebaseio.com/")
+                .build();
+
+        FirebaseApp app;
+
+        try{
+            FirebaseApp.initializeApp(getContext(),options,"Secundary");
+            app = FirebaseApp.getInstance("Secundary");
+        }catch (IllegalStateException e){
+            app = FirebaseApp.getInstance("Secundary");
+        }
+
+        final FirebaseAuth firebaseAuth2 = FirebaseAuth.getInstance(app);
+        firebaseAuth2.signInWithEmailAndPassword(
+                user.getEmail(),
+                user.getSenha()
+        ).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    firebaseAuth2.getCurrentUser().delete();
+                    firebaseAuth2.signOut();
+                }else{
+                    Toast.makeText(getActivity(), "Erro ao excluir usuário", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }
