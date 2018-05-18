@@ -27,6 +27,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,7 +67,8 @@ public class TabAdmins extends Fragment {
         mRecyclerView.setAdapter(mUserAdapter);
 
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("administradores");
-        mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
+
+        mFirebaseDatabase.orderByChild("nome").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mListUsers.removeAll(mListUsers);

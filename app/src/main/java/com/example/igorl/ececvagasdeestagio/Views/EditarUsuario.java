@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -67,22 +68,26 @@ public class EditarUsuario extends CommonActivity {
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
-            modoEditar();
+            try {
+                modoEditar();
 
-            String result = b.getString("usuario");
-            Usuario usuario = gson.fromJson(result, Usuario.class);
+                String result = b.getString("usuario");
+                Usuario usuario = gson.fromJson(result, Usuario.class);
 
-            if(usuario.getTipo() == 1){
-                aluno.setChecked(true);
-            }else{
-                admin.setChecked(true);
+                if(usuario.getTipo() == 1){
+                    aluno.setChecked(true);
+                }else{
+                    admin.setChecked(true);
+                }
+                editNome.setText(usuario.getNome());
+                editMatricula.setText(usuario.getMatricula());
+                editEmail.setText(usuario.getEmail());
+                editSenha.setText(AESCrypt.decrypt(usuario.getSenha()));
+                editConfirmaSenha.setText(AESCrypt.decrypt(usuario.getSenha()));
+                textId.setText(usuario.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            editNome.setText(usuario.getNome());
-            editMatricula.setText(usuario.getMatricula());
-            editEmail.setText(usuario.getEmail());
-            editSenha.setText(usuario.getSenha());
-            editConfirmaSenha.setText(usuario.getSenha());
-            textId.setText(usuario.getId());
             closeDialog();
         }else{
             Toast.makeText(EditarUsuario.this, "Erro ao recuperar dados do usuário", Toast.LENGTH_LONG).show();
@@ -97,17 +102,24 @@ public class EditarUsuario extends CommonActivity {
                 {
                     openDialog("Aguarde...");
                     initUser();
-                    if(mudouTipoCadastro){
-                        if(usuario.getTipo() == 1 ){
-                            mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("administradores");
-                            mFirebaseDatabase.child(usuario.getId()).removeValue();
+                    try{
+                        usuario.setSenha(AESCrypt.encrypt(usuario.getSenha()));
+                        if(mudouTipoCadastro){
+
+                            if(usuario.getTipo() == 1 ){
+                                mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("administradores");
+                                mFirebaseDatabase.child(usuario.getId()).removeValue();
+                            }else{
+                                mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos");
+                                mFirebaseDatabase.child(usuario.getId()).removeValue();
+                            }
+                            usuario.salvarUserFBDatabase();
+
                         }else{
-                            mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos");
-                            mFirebaseDatabase.child(usuario.getId()).removeValue();
+                            usuario.updateUserFBDatabaseEditar();
                         }
-                        usuario.salvarUserFBDatabase();
-                    }else{
-                        usuario.updateUserFBDatabaseEditar();
+                    }catch (Exception e) {
+                        e.printStackTrace();
                     }
                     Toast.makeText(EditarUsuario.this, "Usuário editado com sucesso", Toast.LENGTH_SHORT).show();
                     voltarTelaAdministracao();
@@ -124,6 +136,7 @@ public class EditarUsuario extends CommonActivity {
                 enableButton(botaoSalvar);
                 editConfirmaSenha.setVisibility(View.VISIBLE);
                 enableEditText(editNome);
+                enableEditText(editMatricula);
                 aluno.setClickable(true);
                 admin.setClickable(true);
             }

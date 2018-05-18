@@ -8,6 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +24,8 @@ import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
+import com.github.rtoshiro.util.format.SimpleMaskFormatter;
+import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -85,6 +90,36 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
                     }
                 }else{
                     showDialogMessage("Todos os campos são obrigatórios.");
+                }
+            }
+        });
+
+        editMatricula.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.i("log", "LOG beforeTextChanged charSequence"+ charSequence);
+                Log.i("log", "LOG beforeTextChanged i "+ i);
+                Log.i("log", "LOG beforeTextChanged i1 "+ i1);
+                Log.i("log", "LOG beforeTextChanged i2 "+ i2);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.i("log", "LOG onTextChanged charSequence "+ charSequence);
+                Log.i("log", "LOG onTextChanged i "+ i);
+                Log.i("log", "LOG onTextChanged i1 "+ i1);
+                Log.i("log", "LOG onTextChanged i2 "+ i2);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Log.i("log", "LOG afterTextChanged editable "+ editable);
+                Log.i("log", "LOG afterTextChanged editMatricula.getText().length() "+ editMatricula.getText().length());
+                if(editMatricula.getText().length() == 14){
+                    Log.i("log", "LOG afterTextChanged editable2 "+ editable);
+                    SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
+                    MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
+                    editMatricula.addTextChangedListener(maskTextWatcher);
                 }
             }
         });

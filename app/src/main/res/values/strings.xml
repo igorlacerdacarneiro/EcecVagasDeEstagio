@@ -86,5 +86,6 @@
     <string name="terca">T</string>
     <string name="domingo">D</string>
     <string name="sem_vagas">Sem vagas disponíveis</string>
+    <string name="pesquisar_aqui">Pesquisar aqui...</string>
 
 </resources>

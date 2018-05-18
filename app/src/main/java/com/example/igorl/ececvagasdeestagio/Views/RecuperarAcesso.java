@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +17,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
+import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.CommonActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -41,27 +45,39 @@ public class RecuperarAcesso extends CommonActivity {
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
         initViews();
+
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+            String result = b.getString("email");
+            email.setText(result);
+        }
+
+        firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
+
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isEmailValid(email.getText().toString())){
-                    openDialog("Aguarde...");
-                    firebaseAuth.sendPasswordResetEmail(
-                            email.getText().toString()
-                    ).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(RecuperarAcesso.this, "E-mail enviado com sucesso", Toast.LENGTH_SHORT).show();
-                                voltarTelaLogin();
-                            }else{
-                                closeDialog();
-                                Toast.makeText(RecuperarAcesso.this, "Ocorrou erro, tente novamente", Toast.LENGTH_SHORT).show();
+                if(!email.getText().toString().equals("")){
+                    if(isEmailValid(email.getText().toString())){
+                        openDialog("Aguarde...");
+                        firebaseAuth.sendPasswordResetEmail(
+                                email.getText().toString()
+                        ).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(RecuperarAcesso.this, "E-mail enviado com sucesso", Toast.LENGTH_SHORT).show();
+                                    voltarTelaLogin();
+                                }else{
+                                    closeDialog();
+                                    Toast.makeText(RecuperarAcesso.this, "Erro: e-mail não cadastrado ou inválido ", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+                }else{
+                    showDialogMessage("É necessário preencher o e-mail para recuperar seu acesso.");
                 }
             }
         });
@@ -90,7 +106,7 @@ public class RecuperarAcesso extends CommonActivity {
                 AlertDialog.Builder builder;
                 builder = new AlertDialog.Builder(RecuperarAcesso.this);
                 builder.setTitle("Sair")
-                        .setMessage("Vai deseja sair?")
+                        .setMessage("Deseja sair sem salvar as alterações?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();

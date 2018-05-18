@@ -47,7 +47,8 @@
             android:layout_below="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:backgroundTint="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/textView2"
@@ -62,7 +63,8 @@
             android:layout_below="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <Button
             android:id="@+id/botaoLogin"

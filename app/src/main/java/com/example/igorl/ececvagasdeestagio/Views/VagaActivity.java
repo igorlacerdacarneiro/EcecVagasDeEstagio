@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.Slide;
 import android.support.transition.TransitionManager;
@@ -157,6 +158,17 @@ public class VagaActivity extends AppCompatActivity{
             this.onBackPressed();
         }
         return  super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        TransitionManager.beginDelayedTransition(mLinearVagasTransition, new Slide());
+        mAtividades.setVisibility(View.VISIBLE);
+        mRequisitos.setVisibility(View.VISIBLE);
+        mNumero.setVisibility(View.VISIBLE);
+        mValor.setVisibility(View.VISIBLE);
+        mInformacoes.setVisibility(View.VISIBLE);
     }
 
     @Override

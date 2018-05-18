@@ -1,8 +1,10 @@
 package com.example.igorl.ececvagasdeestagio.Fragmentos;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,13 +13,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igorl.ececvagasdeestagio.Adapters.UserAdapter;
@@ -27,15 +32,18 @@ import com.example.igorl.ececvagasdeestagio.R;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.example.igorl.ececvagasdeestagio.Views.EditarUsuario;
 import com.example.igorl.ececvagasdeestagio.Views.UsuariosSolicitados;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
@@ -72,7 +80,8 @@ public class TabUsuarios extends Fragment {
         mRecyclerView.setAdapter(mUserAdapter);
 
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("alunos");
-        mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
+
+        mFirebaseDatabase.orderByChild("nome").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mListUsers.removeAll(mListUsers);
@@ -109,8 +118,9 @@ public class TabUsuarios extends Fragment {
                 builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mFirebaseDatabase.child(mUsuario.getId()).removeValue();
                         removeUserToAutentication(mUsuario);
-                        mFirebaseDatabase.child(mUsuario.getId().toString()).removeValue();
                         Toast.makeText(getActivity(), "Exclusão efetuada", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -155,6 +165,7 @@ public class TabUsuarios extends Fragment {
                 if(task.isSuccessful()){
                     firebaseAuth2.getCurrentUser().delete();
                     firebaseAuth2.signOut();
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 }else{
                     Toast.makeText(getActivity(), "Erro ao excluir usuário", Toast.LENGTH_LONG).show();
                 }

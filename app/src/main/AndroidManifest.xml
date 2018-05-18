@@ -7,7 +7,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/puc_logo_app"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -22,17 +22,19 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".Views.SolicitarCadastro"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation" />
 
-
-        <activity android:name=".Views.Principal"/>
-
+        <activity
+            android:name=".Views.Principal"
+            android:configChanges="orientation"
+            />
 
         <activity android:name=".Views.AdministracaoVagas"
-            android:parentActivityName=".Views.Principal">
+            android:parentActivityName=".Views.Principal"
+            android:configChanges="orientation" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Views.Principal" />
@@ -41,20 +43,22 @@
 
         <activity
             android:name=".Views.CadastroVaga"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation" />
 
 
         <activity android:name=".Views.AdministracaoUsuarios"
-            android:parentActivityName=".Views.Principal">
+            android:parentActivityName=".Views.Principal"
+            android:configChanges="orientation" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Views.Principal" />
         </activity>
 
-
         <activity
             android:name=".Views.Perfil"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation" />
 
         <activity android:name=".Fragmentos.TabUsuarios" />
         <activity android:name=".Fragmentos.TabAdmins" />
@@ -63,27 +67,31 @@
         <activity android:name=".Views.LinhaUsers" />
         <activity android:name=".Views.LinhaVagas" />
 
-
         <activity
             android:name=".Views.CadastroUsuario"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation" />
 
 
         <activity
             android:name=".Views.RecuperarAcesso"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation" />
 
 
 
         <activity android:name=".Views.UsuariosSolicitados" />
-        <activity android:name=".Views.UsuariosAprovados" />
-        <activity android:name=".Views.VagaActivity" />
+        <activity
+            android:name=".Views.VagaActivity"
+            android:configChanges="orientation"/>
         <activity
             android:name=".Views.EditarUsuario"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation" />
         <activity
             android:name=".Views.EditarVaga"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation"/>
 
         <service android:name=".DAO.MyFirebaseMessagingService">
             <intent-filter>
@@ -96,7 +104,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Views.PrincipalAluno"></activity>
+        <activity
+            android:name=".Views.PrincipalAluno"
+            android:configChanges="orientation"
+            />
     </application>
 
 </manifest>

@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -98,6 +100,7 @@ public class Perfil extends CommonActivity {
                         openDialog("Aguarde...");
                         initUser();
                         try {
+                            mFirebaseAuth.getCurrentUser().updateEmail(usuario.getEmail());
                             mFirebaseAuth.getCurrentUser().updatePassword(usuario.getSenha());
                             usuario.setSenha(AESCrypt.encrypt(usuario.getSenha()));
                             usuario.updateUserFBDatabase();

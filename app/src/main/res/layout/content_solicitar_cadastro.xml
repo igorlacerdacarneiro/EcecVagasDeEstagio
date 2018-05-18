@@ -20,7 +20,8 @@
             android:id="@+id/editTextNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView6"
@@ -33,7 +34,8 @@
             android:id="@+id/editTextMatricula"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberSigned" />
+            android:inputType="numberSigned"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView7"
@@ -46,7 +48,8 @@
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView8"
@@ -59,7 +62,8 @@
             android:id="@+id/editTextSenha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView9"
@@ -72,7 +76,8 @@
             android:id="@+id/editTextConfirmarSenha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <RadioGroup
             android:layout_width="match_parent"

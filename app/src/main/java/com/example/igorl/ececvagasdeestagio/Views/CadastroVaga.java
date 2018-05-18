@@ -129,7 +129,8 @@ public class CadastroVaga extends CommonActivity{
                         !local.getText().toString().trim().equals("") && !titulo.getText().toString().trim().equals("") &&
                         !horarioInicio.getText().toString().trim().equals("") && !horarioFim.getText().toString().trim().equals("") &&
                         !atividades.getText().toString().trim().equals("") && !requisitos.getText().toString().trim().equals("") &&
-                        !numero.getText().toString().trim().equals("") && !valor.getText().toString().trim().equals("") && !informacoes.getText().toString().trim().equals(""))
+                        !numero.getText().toString().trim().equals("") && !valor.getText().toString().trim().equals("") &&
+                        !informacoes.getText().toString().trim().equals("") && imagem.getDrawable() != null)
                 {
                     try {
                         if(validaValorHoariosVaga(horarioInicio.getText().toString(), horarioFim.getText().toString())) {
@@ -169,6 +170,41 @@ public class CadastroVaga extends CommonActivity{
                         e.printStackTrace();
                     }
                 }else{
+
+                    if(curso.getSelectedItem().toString().equals("Selecione um curso")){
+                        showDialogMessage("Selecione um curso");
+                    }
+                    if(empresa.getText().toString().trim().equals("")){
+                        empresa.setError("Preencha o campo");
+                    }
+                    if(local.getText().toString().trim().equals("")){
+                        local.setError("Preencha o campo");
+                    }
+                    if(titulo.getText().toString().trim().equals("")){
+                        titulo.setError("Preencha o campo");
+                    }
+                    if(horarioInicio.getText().toString().trim().equals("")){
+                        horarioInicio.setError("Preencha o campo");
+                    }
+                    if(horarioFim.getText().toString().trim().equals("")){
+                        horarioFim.setError("Preencha o campo");
+                    }
+                    if(atividades.getText().toString().trim().equals("")){
+                        atividades.setError("Preencha o campo");
+                    }
+                    if(requisitos.getText().toString().trim().equals("")){
+                        requisitos.setError("Preencha o campo");
+                    }
+                    if(numero.getText().toString().trim().equals("")){
+                        numero.setError("Preencha o campo");
+                    }
+                    if(valor.getText().toString().trim().equals("")){
+                        valor.setError("Preencha o campo");
+                    }
+                    if(informacoes.getText().toString().trim().equals("")){
+                        informacoes.setError("Preencha o campo");
+                    }
+
                     showDialogMessage("Todos os campos são obrigatórios.");
                 }
             }

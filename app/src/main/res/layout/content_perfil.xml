@@ -48,7 +48,8 @@
             android:layout_below="@+id/textView23"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView26"
@@ -61,7 +62,8 @@
             android:layout_below="@+id/textView26"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="number"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView25"
@@ -75,7 +77,8 @@
             android:layout_below="@+id/textView25"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView24"
@@ -89,7 +92,8 @@
             android:layout_below="@+id/textView24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/textView27"
@@ -103,7 +107,8 @@
             android:layout_below="@+id/textView27"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <Button
             android:id="@+id/botaoSalvarUsuario"

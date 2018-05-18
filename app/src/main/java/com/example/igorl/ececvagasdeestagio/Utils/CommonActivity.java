@@ -73,13 +73,17 @@ public abstract class CommonActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder;
         builder = new AlertDialog.Builder(this);
-        builder.setMessage(mensagem)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setMessage(mensagem);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                })
-                .show();
+                });
+        builder.setCancelable(false);
+        //builder.show();
+        final AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     protected void openDialog(String msg){

@@ -20,15 +20,22 @@
         android:background="?attr/colorPrimary"
         app:popupTheme="@style/Theme.AppCompat.Light"/>
 
-    <android.support.v7.widget.RecyclerView
+    <ScrollView
+        android:layout_below="@+id/toolbar_principal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:id="@+id/recyclerViewAllVagas"
-        android:layout_below="@+id/toolbar_principal"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:id="@+id/recyclerViewAllVagas"
+            android:layout_below="@+id/toolbar_principal"/>
+
+    </ScrollView>
 
     <TextView
         android:id="@+id/textViewTextoVazio"

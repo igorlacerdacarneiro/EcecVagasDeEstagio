@@ -21,6 +21,7 @@ public class Usuario {
     private String matricula;
     private String email;
     private String senha;
+    private boolean changePassword;
 
     public Usuario() {
     }
@@ -80,6 +81,14 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public boolean isChangePassword() {
+        return changePassword;
+    }
+
+    public void setChangePassword(boolean changePassword) {
+        this.changePassword = changePassword;
     }
 
     private void setNomeInMap(Map<String, Object> map){
@@ -186,6 +195,23 @@ public class Usuario {
         }
     }
 
+    public void updateUserFBDatabaseChangePassword(String senha, Boolean mudou){
+        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+
+        if(getTipo() == 1){
+            referenciaFirebase = referenciaFirebase.child("usuarios").child("alunos").child(getId());
+        }else{
+            referenciaFirebase = referenciaFirebase.child("usuarios").child("administradores").child(getId());
+        }
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("senha", senha);
+        map.put("changePassword", mudou);
+        if(map.isEmpty()){
+            return;
+        }
+        referenciaFirebase.updateChildren(map);
+    }
 
     public boolean isUsuarioAdministrador(){
         if(getTipo() == 2){

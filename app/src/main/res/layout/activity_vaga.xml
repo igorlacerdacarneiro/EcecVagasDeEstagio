@@ -33,80 +33,200 @@
             android:paddingTop="24dp"
             android:textSize="24sp"/>
 
-        <TextView
-            android:id="@+id/textViewLocalDaVaga"
+        <LinearLayout
+            android:id="@+id/linear_layout_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/textViewTituloDaVaga"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:transitionName="element3"
-            android:paddingLeft="16dp"
-            android:textSize="14sp"/>
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
 
-        <TextView
-            android:id="@+id/textViewEmpresaDaVaga"
-            android:layout_below="@id/textViewLocalDaVaga"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:transitionName="element4"
-            android:paddingLeft="16dp"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/local" />
+            <TextView
+                android:id="@+id/textViewLocalDaVaga"
+                android:layout_below="@+id/textViewTituloDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionName="element3"
+                android:paddingLeft="10dp"
+                android:textSize="14sp"/>
 
-        <TextView
-            android:id="@+id/textViewHorarioDaVaga"
-            android:layout_below="@+id/textViewEmpresaDaVaga"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:transitionName="element5"
-            android:paddingLeft="16dp"
-            android:textSize="14sp"/>
+            android:layout_below="@+id/linear_layout_1"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/empresa" />
+
+            <TextView
+                android:id="@+id/textViewEmpresaDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionName="element4"
+                android:paddingLeft="10dp"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linear_layout_2"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/horario" />
+
+            <TextView
+                android:id="@+id/textViewHorarioDaVaga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionName="element5"
+                android:paddingLeft="10dp"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linear_layout_vagas_transition"
-            android:layout_below="@+id/textViewHorarioDaVaga"
+            android:layout_below="@+id/linear_layout_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textViewAtividadesDaVaga"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:paddingLeft="16dp"
-                android:textSize="14sp"
-                android:visibility="invisible"/>
+                android:paddingRight="16dp">
 
-            <TextView
-                android:id="@+id/textViewRequisitosDaVaga"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:textSize="14sp"
-                android:visibility="invisible"/>
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/atividades_vaga" />
 
-            <TextView
-                android:id="@+id/textViewNumeroDeVaga"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:textSize="14sp"
-                android:visibility="invisible"/>
+                <TextView
+                    android:id="@+id/textViewAtividadesDaVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:textSize="14sp"
+                    android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/textViewValorBolsaDaVaga"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:textSize="14sp"
-                android:visibility="invisible"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textViewInformacoesDaVaga"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:paddingLeft="16dp"
-                android:paddingBottom="24dp"
-                android:textSize="14sp"
-                android:visibility="invisible"/>
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/requisitos_vaga" />
+
+                <TextView
+                    android:id="@+id/textViewRequisitosDaVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:textSize="14sp"
+                    android:visibility="invisible"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/numero_vaga" />
+
+                <TextView
+                    android:id="@+id/textViewNumeroDeVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:textSize="14sp"
+                    android:visibility="invisible"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/valor_bolsa_vaga" />
+
+                <TextView
+                    android:id="@+id/textViewValorBolsaDaVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:textSize="14sp"
+                    android:visibility="invisible"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="24dp">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/informacoes_vaga" />
+
+                <TextView
+                    android:id="@+id/textViewInformacoesDaVaga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:textSize="14sp"
+                    android:visibility="invisible"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

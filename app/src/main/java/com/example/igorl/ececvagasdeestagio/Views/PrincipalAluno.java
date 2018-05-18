@@ -27,6 +27,7 @@ import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.Models.Vaga;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +39,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrincipalAluno extends AppCompatActivity {
+public class PrincipalAluno extends AppCompatActivity implements DialogChangePassword.DialogChangePasswordListener{
     private Toolbar mToobar;
     private ProgressBar mProgressBar;
     private Vaga mVaga;
@@ -77,6 +78,11 @@ public class PrincipalAluno extends AppCompatActivity {
                 Log.i("log", "LOG MUSERS 4 === "+mUsers.getEmail());
                 Log.i("log", "LOG MUSERS 5 === "+mUsers.getSenha());
                 Log.i("log", "LOG MUSERS 6 === "+mUsers.getMatricula());
+                Log.i("log", "LOG MUSERS 7 === "+mUsers.isChangePassword());
+
+                if(mUsers.isChangePassword()){
+                    openDialogChangePassword();
+                }
             }
 
             @Override
@@ -165,6 +171,11 @@ public class PrincipalAluno extends AppCompatActivity {
         }));
     }
 
+    private void openDialogChangePassword() {
+        DialogChangePassword dialogChangePassword = new DialogChangePassword();
+        dialogChangePassword.show(getSupportFragmentManager(), "dialog");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -211,5 +222,17 @@ public class PrincipalAluno extends AppCompatActivity {
         Intent intent_sair = new Intent(PrincipalAluno.this, Login.class);
         startActivity(intent_sair);
         finish();
+    }
+
+    @Override
+    public void returnPassword(String password) {
+        try{
+            mFirebaseAuth.getCurrentUser().updatePassword(password);
+            mUsers.updateUserFBDatabaseChangePassword(AESCrypt.encrypt(password), false);
+            mUsers.setSenha(AESCrypt.encrypt(password));
+            Toast.makeText(PrincipalAluno.this, "Senha atualizada com sucesso", Toast.LENGTH_SHORT).show();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

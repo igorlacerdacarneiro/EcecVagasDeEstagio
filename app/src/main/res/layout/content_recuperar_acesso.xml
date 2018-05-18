@@ -20,7 +20,8 @@
             android:layout_below="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:backgroundTint="@color/colorPrimary"/>
 
         <Button
             android:id="@+id/botaoRecuperarEnviar"

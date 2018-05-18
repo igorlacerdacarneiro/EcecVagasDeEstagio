@@ -61,7 +61,15 @@ public class Login extends CommonActivity {
                     initUser();
                     login();
                 }else{
-                    Toast.makeText(Login.this, "Preencha os campos de E-mail e Senha", Toast.LENGTH_SHORT).show();
+                    if(!email.getText().toString().equals("") && senha.getText().toString().equals("")){
+                        showDialogMessage("Preencha campo de senha.");
+                    }
+                    if(email.getText().toString().equals("") && !senha.getText().toString().equals("")){
+                        showDialogMessage("Preencha campo de e-mail.");
+                    }
+                    if(email.getText().toString().equals("") && senha.getText().toString().equals("")){
+                        showDialogMessage("Preencha campo de e-mail e senha.");
+                    }
                 }
             }
         });
@@ -78,6 +86,10 @@ public class Login extends CommonActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Login.this, RecuperarAcesso.class);
+                if(!email.getText().toString().equals("")){
+                    String send = email.getText().toString();
+                    intent.putExtra("email",send);
+                }
                 startActivity(intent);
             }
         });
@@ -104,10 +116,8 @@ public class Login extends CommonActivity {
                             Log.i("log", "LOG usuario 6 === "+usuario.getMatricula());
 
                             if(usuario.isUsuarioAdministrador()){
-                                Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
                                 abrirTelaPrincipalAdmin();
                             }else{
-                                Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
                                 abrirTelaPrincipalAluno();
                             }
                         }
@@ -121,7 +131,7 @@ public class Login extends CommonActivity {
                     }catch (FirebaseAuthInvalidUserException e){
                         erroExcessao = "E-mail incorreto ou não cadastrado.";
                     }catch (Exception e){
-                        erroExcessao = "ERRO 500";
+                        erroExcessao = "Erro, verifique sua internet e tente novamente!";
                         e.printStackTrace();
                     }
                     Toast.makeText(Login.this, erroExcessao, Toast.LENGTH_SHORT).show();
@@ -174,10 +184,8 @@ public class Login extends CommonActivity {
                     Log.i("log", "LOG usuario 6 === "+usuario.getMatricula());
 
                     if(usuario.isUsuarioAdministrador()){
-                        Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
                         abrirTelaPrincipalAdmin();
                     }else{
-                        Toast.makeText(Login.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
                         abrirTelaPrincipalAluno();
                     }
                 }

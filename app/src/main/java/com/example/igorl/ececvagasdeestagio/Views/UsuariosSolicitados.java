@@ -70,7 +70,7 @@ public class UsuariosSolicitados extends AppCompatActivity implements DatabaseRe
         setContentView(R.layout.activity_usuarios_solicitados);
 
         mToobar = (Toolbar) findViewById(R.id.toolbar_usuarios_solicitados);
-        mToobar.setTitle("Usuários Solicitados");
+        mToobar.setTitle(R.string.usuarios_solicitados);
         mToobar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
