@@ -306,7 +306,9 @@ public class CadastroVaga extends CommonActivity{
         vaga.setAtividades(atividades.getText().toString());
         vaga.setRequisitos(requisitos.getText().toString());
         vaga.setNumero(numero.getText().toString());
-        vaga.setBolsa(valor.getText().toString());
+
+        vaga.setBolsa("R$ "+valor.getText().toString()+",00");
+
         vaga.setInformacoes(informacoes.getText().toString());
         vaga.setData(data.getText().toString());
     }

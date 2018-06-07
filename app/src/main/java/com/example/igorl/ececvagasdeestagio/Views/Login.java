@@ -38,7 +38,6 @@ public class Login extends CommonActivity {
     private DatabaseReference mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth;
     private Usuario mUsers;
-    Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,13 +107,6 @@ public class Login extends CommonActivity {
                         @Override
                         public void onCallback(Usuario usuario) {
 
-                            Log.i("log", "LOG usuario 1 === "+usuario.getId());
-                            Log.i("log", "LOG usuario 2 === "+usuario.getTipo());
-                            Log.i("log", "LOG usuario 3 === "+usuario.getNome());
-                            Log.i("log", "LOG usuario 4 === "+usuario.getEmail());
-                            Log.i("log", "LOG usuario 5 === "+usuario.getSenha());
-                            Log.i("log", "LOG usuario 6 === "+usuario.getMatricula());
-
                             if(usuario.isUsuarioAdministrador()){
                                 abrirTelaPrincipalAdmin();
                             }else{
@@ -175,13 +167,6 @@ public class Login extends CommonActivity {
             readData(new MyCallback() {
                 @Override
                 public void onCallback(Usuario usuario) {
-
-                    Log.i("log", "LOG usuario 1 === "+usuario.getId());
-                    Log.i("log", "LOG usuario 2 === "+usuario.getTipo());
-                    Log.i("log", "LOG usuario 3 === "+usuario.getNome());
-                    Log.i("log", "LOG usuario 4 === "+usuario.getEmail());
-                    Log.i("log", "LOG usuario 5 === "+usuario.getSenha());
-                    Log.i("log", "LOG usuario 6 === "+usuario.getMatricula());
 
                     if(usuario.isUsuarioAdministrador()){
                         abrirTelaPrincipalAdmin();

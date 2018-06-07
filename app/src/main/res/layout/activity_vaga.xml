@@ -42,18 +42,18 @@
             android:paddingLeft="16dp">
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/local" />
+                android:text="@string/empresa" />
+
             <TextView
-                android:id="@+id/textViewLocalDaVaga"
-                android:layout_below="@+id/textViewTituloDaVaga"
+                android:id="@+id/textViewEmpresaDaVaga"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:transitionName="element3"
                 android:paddingLeft="10dp"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -66,18 +66,18 @@
             android:paddingLeft="16dp">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/empresa" />
-
+                android:text="@string/local" />
             <TextView
-                android:id="@+id/textViewEmpresaDaVaga"
+                android:id="@+id/textViewLocalDaVaga"
+                android:layout_below="@+id/textViewTituloDaVaga"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:transitionName="element4"
                 android:paddingLeft="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
         </LinearLayout>
 

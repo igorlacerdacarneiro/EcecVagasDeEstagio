@@ -97,31 +97,18 @@ public class CadastroUsuario extends CommonActivity implements DatabaseReference
         editMatricula.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.i("log", "LOG beforeTextChanged charSequence"+ charSequence);
-                Log.i("log", "LOG beforeTextChanged i "+ i);
-                Log.i("log", "LOG beforeTextChanged i1 "+ i1);
-                Log.i("log", "LOG beforeTextChanged i2 "+ i2);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.i("log", "LOG onTextChanged charSequence "+ charSequence);
-                Log.i("log", "LOG onTextChanged i "+ i);
-                Log.i("log", "LOG onTextChanged i1 "+ i1);
-                Log.i("log", "LOG onTextChanged i2 "+ i2);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Log.i("log", "LOG afterTextChanged editable "+ editable);
-                Log.i("log", "LOG afterTextChanged editMatricula.getText().length() "+ editMatricula.getText().length());
-                if(editMatricula.getText().length() == 14){
-                    Log.i("log", "LOG afterTextChanged editable2 "+ editable);
+                if(i == 13){
                     SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
                     MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
                     editMatricula.addTextChangedListener(maskTextWatcher);
                 }
             }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
         });
     }
 

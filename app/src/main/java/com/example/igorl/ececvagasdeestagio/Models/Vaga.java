@@ -20,7 +20,6 @@ import com.google.firebase.storage.UploadTask;
  */
 
 public class Vaga {
-    private String id;
     private String codigo;
     private int status;
     private String curso;
@@ -40,8 +39,7 @@ public class Vaga {
     public Vaga() {
     }
 
-    public Vaga(String id, String codigo, int status, String curso, String empresa, String local, String titulo, String horario, String atividades, String requisitos, String numero, String bolsa, String informacoes, String imagem, String data) {
-        this.id = id;
+    public Vaga(String codigo, int status, String curso, String empresa, String local, String titulo, String horario, String atividades, String requisitos, String numero, String bolsa, String informacoes, String imagem, String data) {
         this.codigo = codigo;
         this.status = status;
         this.curso = curso;
@@ -56,14 +54,6 @@ public class Vaga {
         this.informacoes = informacoes;
         this.imagem = imagem;
         this.data = data;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getStatus() {

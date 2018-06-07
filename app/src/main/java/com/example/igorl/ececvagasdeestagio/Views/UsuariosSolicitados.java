@@ -93,8 +93,8 @@ public class UsuariosSolicitados extends AppCompatActivity implements DatabaseRe
 
         mRecyclerView.setAdapter(mUserAdapter);
 
-        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitados");
-        mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitantes");
+        mFirebaseDatabase.orderByChild("nome").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mlistUsuarios.removeAll(mlistUsuarios);
@@ -196,7 +196,7 @@ public class UsuariosSolicitados extends AppCompatActivity implements DatabaseRe
     }
 
     private void removeUserChildSolicitadoFromDatabase(){
-        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitados");
+        mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("usuarios").child("solicitantes");
         mFirebaseDatabase.child(mUsuario.getId()).removeValue();
     }
 

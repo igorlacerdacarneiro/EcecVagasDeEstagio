@@ -29,6 +29,7 @@ import com.example.igorl.ececvagasdeestagio.Adapters.UserAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.example.igorl.ececvagasdeestagio.Views.EditarUsuario;
 import com.example.igorl.ececvagasdeestagio.Views.UsuariosSolicitados;
@@ -147,6 +148,12 @@ public class TabUsuarios extends Fragment {
                 .build();
 
         FirebaseApp app;
+
+        try {
+            user.setSenha(AESCrypt.decrypt(user.getSenha()));
+        } catch (Exception e) {
+            user.setSenha(user.getSenha());
+        }
 
         try{
             FirebaseApp.initializeApp(getContext(),options,"Secundary");

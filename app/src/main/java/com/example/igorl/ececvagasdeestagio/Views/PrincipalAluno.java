@@ -70,15 +70,7 @@ public class PrincipalAluno extends AppCompatActivity implements DialogChangePas
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("log", "LOG dataSnapshot === "+dataSnapshot);
                 mUsers = dataSnapshot.getValue(Usuario.class);
-                Log.i("log", "LOG MUSERS 1 === "+mUsers.getId());
-                Log.i("log", "LOG MUSERS 2 === "+mUsers.getTipo());
-                Log.i("log", "LOG MUSERS 3 === "+mUsers.getNome());
-                Log.i("log", "LOG MUSERS 4 === "+mUsers.getEmail());
-                Log.i("log", "LOG MUSERS 5 === "+mUsers.getSenha());
-                Log.i("log", "LOG MUSERS 6 === "+mUsers.getMatricula());
-                Log.i("log", "LOG MUSERS 7 === "+mUsers.isChangePassword());
 
                 if(mUsers.isChangePassword()){
                     openDialogChangePassword();

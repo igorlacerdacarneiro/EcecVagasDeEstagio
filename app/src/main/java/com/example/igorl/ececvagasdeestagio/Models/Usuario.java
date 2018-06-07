@@ -13,8 +13,6 @@ import java.util.Map;
 
 public class Usuario {
 
-    public static String PROVIDER = "com.exemple.igorl.ececvagasdeestagio.domain.User.PROVIDER";
-
     private String id;
     private int tipo;
     private String nome;
@@ -103,25 +101,19 @@ public class Usuario {
         }
     }
 
+    private void setEmailInMap(Map<String, Object> map){
+        if(getEmail() != null){
+            map.put("email", getEmail());
+        }
+    }
+
     private void setTipoInMap(Map<String, Object> map){
             map.put("tipo", getTipo());
     }
 
     public void salvarUserSolicitadoFBDatabase(DatabaseReference.CompletionListener... completionListener){
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
-        referenciaFirebase = referenciaFirebase.child("usuarios").child("solicitados");
-
-        if( completionListener.length == 0 ){
-            referenciaFirebase.child(String.valueOf(getId())).setValue(this);
-        }
-        else{
-            referenciaFirebase.child(String.valueOf(getId())).setValue(this, completionListener[0]);
-        }
-    }
-
-    public void salvarUserAprovadosFBDatabase(DatabaseReference.CompletionListener... completionListener){
-        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
-        referenciaFirebase = referenciaFirebase.child("usuarios").child("aprovados");
+        referenciaFirebase = referenciaFirebase.child("usuarios").child("solicitantes");
 
         if( completionListener.length == 0 ){
             referenciaFirebase.child(String.valueOf(getId())).setValue(this);
@@ -159,6 +151,7 @@ public class Usuario {
         HashMap<String, Object> map = new HashMap<>();
         setNomeInMap(map);
         setSenhaInMap(map);
+        setEmailInMap(map);
         if(map.isEmpty()){
             return;
         }

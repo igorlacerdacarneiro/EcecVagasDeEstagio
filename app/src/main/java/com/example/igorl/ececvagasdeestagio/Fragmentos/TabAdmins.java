@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.igorl.ececvagasdeestagio.Adapters.UserAdapter;
 import com.example.igorl.ececvagasdeestagio.DAO.ConfiguracaoFirebase;
 import com.example.igorl.ececvagasdeestagio.Models.Usuario;
 import com.example.igorl.ececvagasdeestagio.R;
+import com.example.igorl.ececvagasdeestagio.Utils.AESCrypt;
 import com.example.igorl.ececvagasdeestagio.Utils.RecyclerTouchListener;
 import com.example.igorl.ececvagasdeestagio.Views.EditarUsuario;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -135,6 +137,12 @@ public class TabAdmins extends Fragment {
 
         FirebaseApp app;
 
+        try {
+            user.setSenha(AESCrypt.decrypt(user.getSenha()));
+        } catch (Exception e) {
+            user.setSenha(user.getSenha());
+        }
+
         try{
             FirebaseApp.initializeApp(getContext(),options,"Secundary");
             app = FirebaseApp.getInstance("Secundary");
@@ -154,6 +162,7 @@ public class TabAdmins extends Fragment {
                     firebaseAuth2.signOut();
                 }else{
                     Toast.makeText(getActivity(), "Erro ao excluir usuário", Toast.LENGTH_LONG).show();
+                    Log.i("log", task.getException().getMessage());
                 }
             }
         });

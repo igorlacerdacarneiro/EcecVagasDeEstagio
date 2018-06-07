@@ -64,6 +64,8 @@ public class TabEncerradas extends Fragment {
 
         mRecyclerView.setAdapter(mVagaAdapter);
 
+        mFirebaseStorage = FirebaseStorage.getInstance();
+
         mFirebaseDatabase = ConfiguracaoFirebase.getFirebase().child("vagas").child("encerradas");
         mDBListerner = mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
             @Override

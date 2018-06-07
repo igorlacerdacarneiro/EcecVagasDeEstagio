@@ -93,17 +93,6 @@
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation"/>
 
-        <service android:name=".DAO.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".DAO.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".Views.PrincipalAluno"
             android:configChanges="orientation"

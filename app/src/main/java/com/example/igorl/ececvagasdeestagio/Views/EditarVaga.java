@@ -132,7 +132,10 @@ public class EditarVaga extends CommonActivity {
             atividades.setText(vaga.getAtividades());
             requisitos.setText(vaga.getRequisitos());
             numero.setText(vaga.getNumero());
-            valor.setText(vaga.getBolsa());
+
+            String[] v1 = vaga.getBolsa().split(" ");
+            String[] v2 = v1[1].split(",");
+            valor.setText(v2[0]);
             informacoes.setText(vaga.getInformacoes());
             data.setText(vaga.getData());
             setSelectValueSpinner(curso, vaga.getCurso());
@@ -262,6 +265,7 @@ public class EditarVaga extends CommonActivity {
                 enableEditText(informacoes);
                 curso.setEnabled(true);
                 selecionarFoto.setVisibility(View.VISIBLE);
+                editar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -409,7 +413,7 @@ public class EditarVaga extends CommonActivity {
         vaga.setAtividades(atividades.getText().toString());
         vaga.setRequisitos(requisitos.getText().toString());
         vaga.setNumero(numero.getText().toString());
-        vaga.setBolsa(valor.getText().toString());
+        vaga.setBolsa("R$ "+valor.getText().toString()+",00");
         vaga.setInformacoes(informacoes.getText().toString());
         vaga.setData(data.getText().toString());
     }
@@ -445,6 +449,7 @@ public class EditarVaga extends CommonActivity {
         Intent intent = new Intent(EditarVaga.this, AdministracaoVagas.class);
         startActivity(intent);
         closeDialog();
+        Toast.makeText(EditarVaga.this, "Vaga editada com sucesso!", Toast.LENGTH_SHORT).show();
         finish();
     }
 

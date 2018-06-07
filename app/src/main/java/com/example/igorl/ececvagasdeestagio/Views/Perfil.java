@@ -135,7 +135,9 @@ public class Perfil extends CommonActivity {
     protected void onStart() {
         super.onStart();
 
-        tipo.setVisibility(View.INVISIBLE);
+        modoBloqueado();
+
+        /*tipo.setVisibility(View.INVISIBLE);
         tipoCadastro.setVisibility(View.INVISIBLE);
         disableButton(botaoSalvar);
         disableEditText(editNome);
@@ -143,7 +145,7 @@ public class Perfil extends CommonActivity {
         disableEditText(editEmail);
         disableEditText(editSenha);
         confSenha.setVisibility(View.INVISIBLE);
-        editConfirmaSenha.setVisibility(View.INVISIBLE);
+        editConfirmaSenha.setVisibility(View.INVISIBLE);*/
     }
 
 
@@ -177,7 +179,13 @@ public class Perfil extends CommonActivity {
     }
 
     public void voltarTelaPrincipal(){
-        Intent intent = new Intent(Perfil.this, Principal.class);
+        Toast.makeText(Perfil.this, "Perfil Atualizado", Toast.LENGTH_SHORT).show();
+        Intent intent;
+        if(usuario.getTipo() == 1){
+            intent = new Intent(Perfil.this, PrincipalAluno.class);
+        }else{
+            intent = new Intent(Perfil.this, Principal.class);
+        }
         startActivity(intent);
         closeDialog();
         finish();
@@ -207,5 +215,17 @@ public class Perfil extends CommonActivity {
             }
         }
         return  super.onOptionsItemSelected(item);
+    }
+
+    private void modoBloqueado(){
+        tipo.setVisibility(View.INVISIBLE);
+        tipoCadastro.setVisibility(View.INVISIBLE);
+        disableButton(botaoSalvar);
+        disableEditText(editNome);
+        disableEditText(editMatricula);
+        disableEditText(editEmail);
+        disableEditText(editSenha);
+        confSenha.setVisibility(View.INVISIBLE);
+        editConfirmaSenha.setVisibility(View.INVISIBLE);
     }
 }

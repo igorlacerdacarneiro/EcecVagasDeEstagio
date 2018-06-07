@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,10 +66,6 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
 
         tipoCadastro.setVisibility(View.INVISIBLE);
 
-        SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
-        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
-        editMatricula.addTextChangedListener(maskTextWatcher);
-
         solicitarCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +94,23 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
                     showDialogMessage("Todos os campos são obrigatórios.");
                 }
             }
+        });
+
+        editMatricula.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(i == 13){
+                    SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNNN.N.NNNN.NNNN-N");
+                    MaskTextWatcher maskTextWatcher = new MaskTextWatcher(editMatricula, simpleMaskFormatter);
+                    editMatricula.addTextChangedListener(maskTextWatcher);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
         });
     }
 
@@ -128,10 +143,14 @@ public class SolicitarCadastro extends CommonActivity implements DatabaseReferen
     }
 
     private String createIdByMatricula(String matricula){
-
-        String[] a = matricula.split("\\.");
-        String[] b = a[3].split("-");
-        String c = a[0]+a[1]+a[2]+b[0]+b[1];
+        String c;
+        try{
+            String[] a = matricula.split("\\.");
+            String[] b = a[3].split("-");
+            c = a[0]+a[1]+a[2]+b[0]+b[1];
+        }catch (Exception e) {
+            c = matricula;
+        }
 
         return c;
     }

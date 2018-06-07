@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -68,26 +69,27 @@ public class EditarUsuario extends CommonActivity {
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
+            modoEditar();
+
+            String result = b.getString("usuario");
+            Usuario usuario = gson.fromJson(result, Usuario.class);
+
+            if(usuario.getTipo() == 1){
+                aluno.setChecked(true);
+            }else{
+                admin.setChecked(true);
+            }
+            editNome.setText(usuario.getNome());
+            editMatricula.setText(usuario.getMatricula());
+            editEmail.setText(usuario.getEmail());
             try {
-                modoEditar();
-
-                String result = b.getString("usuario");
-                Usuario usuario = gson.fromJson(result, Usuario.class);
-
-                if(usuario.getTipo() == 1){
-                    aluno.setChecked(true);
-                }else{
-                    admin.setChecked(true);
-                }
-                editNome.setText(usuario.getNome());
-                editMatricula.setText(usuario.getMatricula());
-                editEmail.setText(usuario.getEmail());
                 editSenha.setText(AESCrypt.decrypt(usuario.getSenha()));
                 editConfirmaSenha.setText(AESCrypt.decrypt(usuario.getSenha()));
-                textId.setText(usuario.getId());
             } catch (Exception e) {
-                e.printStackTrace();
+                editSenha.setText(usuario.getSenha());
+                editConfirmaSenha.setText(usuario.getSenha());
             }
+            textId.setText(usuario.getId());
             closeDialog();
         }else{
             Toast.makeText(EditarUsuario.this, "Erro ao recuperar dados do usuário", Toast.LENGTH_LONG).show();

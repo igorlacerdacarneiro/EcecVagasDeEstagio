@@ -51,13 +51,13 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView29"
+                        android:id="@+id/textView30"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="4dp"
-                        android:text="@string/local" />
+                        android:text="@string/empresa" />
                     <TextView
-                        android:id="@+id/textViewLocalVaga"
+                        android:id="@+id/textViewEmpresaVaga"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -69,13 +69,13 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView30"
+                        android:id="@+id/textView29"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="4dp"
-                        android:text="@string/empresa" />
+                        android:text="@string/local" />
                     <TextView
-                        android:id="@+id/textViewEmpresaVaga"
+                        android:id="@+id/textViewLocalVaga"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
