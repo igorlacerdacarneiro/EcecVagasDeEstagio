@@ -13,7 +13,7 @@
     <string name="cadastar">Solicitar Cadastro</string>
     <string name="usuarios_solicitados">Usuários Solicitantes</string>
     <string name="usuarios_aprovados">Usuários Aprovados</string>
-    <string name="recuperar_acesso">Recuperar Senha</string>
+    <string name="recuperar_acesso">Recuperar Acesso</string>
     <string name="tela_editar_vaga">Editar Vaga</string>
     <string name="tela_cadastro_vaga">Cadastro de Vaga</string>
     <string name="tela_editar_usuario">Editar Usuário</string>
