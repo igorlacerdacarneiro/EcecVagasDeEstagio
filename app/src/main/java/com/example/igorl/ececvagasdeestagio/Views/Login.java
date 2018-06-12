@@ -56,9 +56,13 @@ public class Login extends CommonActivity {
             @Override
             public void  onClick(View v){
                 if(!email.getText().toString().equals("") && !senha.getText().toString().equals("")){
-                    openDialog("Aguarde...");
-                    initUser();
-                    login();
+                    if(isEmailValid(email.getText().toString())){
+                        openDialog("Aguarde...");
+                        initUser();
+                        login();
+                    }else{
+                        showDialogMessage("E-mail digitado não é um e-mail valido.");
+                    }
                 }else{
                     if(!email.getText().toString().equals("") && senha.getText().toString().equals("")){
                         showDialogMessage("Preencha campo de senha.");
